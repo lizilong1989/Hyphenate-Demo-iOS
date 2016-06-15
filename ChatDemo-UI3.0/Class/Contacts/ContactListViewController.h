@@ -16,7 +16,7 @@
 
 @property (strong, nonatomic) GroupListViewController *groupController;
 
-- (void)reloadApplyView;
+- (void)reloadRequestCount;
 - (void)reloadGroupView;
 - (void)reloadDataSource;
 - (void)addFriendAction;

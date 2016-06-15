@@ -311,7 +311,7 @@ static ChatDemoHelper *helper = nil;
     }
     
     if (self.contactViewVC) {
-        [self.contactViewVC reloadApplyView];
+        [self.contactViewVC reloadRequestCount];
     }
 }
 
@@ -367,7 +367,7 @@ static ChatDemoHelper *helper = nil;
     }
     
     if (self.contactViewVC) {
-        [self.contactViewVC reloadApplyView];
+        [self.contactViewVC reloadRequestCount];
     }
 }
 
@@ -455,7 +455,7 @@ static ChatDemoHelper *helper = nil;
 #endif
     }
     
-    [_contactViewVC reloadApplyView];
+    [_contactViewVC reloadRequestCount];
 }
 
 #pragma mark - EMChatroomManagerDelegate

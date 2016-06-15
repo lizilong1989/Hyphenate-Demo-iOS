@@ -51,21 +51,24 @@ static NSString *kGroupName = @"GroupName";
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     
     self.edgesForExtendedLayout = UIRectEdgeNone;
-    self.title = NSLocalizedString(@"title.conversation", @"Chats");
     
+//    self.title = NSLocalizedString(@"title.conversation", @"Chats");
+    self.title = @"Favorites";
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setupUntreatedApplyCount) name:@"setupUntreatedApplyCount" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setupUnreadMessageCount) name:@"setupUnreadMessageCount" object:nil];
     
-    [self setupSubviews];
+    [self setupTabBars];
     
-    self.selectedIndex = 0;
-    [self selectedTapTabBarItems:self.chatListVC.tabBarItem];
+//    self.selectedIndex = 0;
+//    [self selectedTapTabBarItems:self.chatListVC.tabBarItem];
     
     self.addFriendItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add"]
                                                                             style:UIBarButtonItemStylePlain
                                                                             target:self
                                                                             action:@selector(addFriendAction)];
-    
+    self.navigationItem.rightBarButtonItem = self.addFriendItem;
+
     [self setupUnreadMessageCount];
     [self setupUntreatedApplyCount];
     
@@ -91,53 +94,66 @@ static NSString *kGroupName = @"GroupName";
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
-    self.navigationItem.rightBarButtonItem = nil;
-
-    if (item.tag == 0) {
-        self.title = NSLocalizedString(@"title.conversation", @"Chats");
-    }
-    else if (item.tag == 1) {
-        self.title = NSLocalizedString(@"title.addressbook", @"Contacts");
-        self.navigationItem.rightBarButtonItem = self.addFriendItem;
-    }
-    else if (item.tag == 2) {
-        self.title = NSLocalizedString(@"title.setting", @"Settings");
-        [self.settingsVC refreshConfig];
-    }
+//    self.navigationItem.rightBarButtonItem = nil;
+//
+//    if (item.tag == 0) {
+//        self.title = NSLocalizedString(@"title.conversation", @"Chats");
+//    }
+//    else if (item.tag == 1) {
+//        self.title = NSLocalizedString(@"title.addressbook", @"Contacts");
+//        self.navigationItem.rightBarButtonItem = self.addFriendItem;
+//    }
+//    else if (item.tag == 2) {
+//        self.title = NSLocalizedString(@"title.setting", @"Settings");
+//        [self.settingsVC refreshConfig];
+//    }
+    
+//    if (item.tag == 0) {
+//        self.title = NSLocalizedString(@"title.addressbook", @"Contacts");
+//        self.navigationItem.rightBarButtonItem = self.addFriendItem;
+//    }
+//    else if (item.tag == 1) {
+//        self.title = NSLocalizedString(@"title.setting", @"Settings");
+//        [self.settingsVC refreshConfig];
+//    }
 }
 
 
 #pragma mark - private
 
-- (void)setupSubviews
+- (void)setupTabBars
 {
     [[UITabBar appearance] setSelectedImageTintColor:[UIColor HIPrimaryColor]];
     [[UITabBar appearance] setBarTintColor:[UIColor whiteColor]];
 
-    // Chats screen
-    self.chatListVC = [[ConversationListController alloc] initWithNibName:nil bundle:nil];
-    [self.chatListVC networkChanged:_connectionState];
-    self.chatListVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Chats" image:[UIImage imageNamed:@"tabbar_chats"] selectedImage:[UIImage imageNamed:@"tabbar_chatsHL"]];
-    self.chatListVC.tabBarItem.tag = 0;
-    [self unSelectedTapTabBarItems:self.chatListVC.tabBarItem];
-    [self selectedTapTabBarItems:self.chatListVC.tabBarItem];
+//    // Chats screen
+//    self.chatListVC = [[ConversationListController alloc] initWithNibName:nil bundle:nil];
+//    [self.chatListVC networkChanged:_connectionState];
+//    self.chatListVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Chats" image:[UIImage imageNamed:@"tabbar_chats"] selectedImage:[UIImage imageNamed:@"tabbar_chatsHL"]];
+//    self.chatListVC.tabBarItem.tag = 0;
+//    [self unSelectedTapTabBarItems:self.chatListVC.tabBarItem];
+//    [self selectedTapTabBarItems:self.chatListVC.tabBarItem];
     
     // Contacts screen
     self.contactsVC = [[ContactListViewController alloc] initWithNibName:nil bundle:nil];
-    self.contactsVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Contacts" image:[UIImage imageNamed:@"tabbar_contactsHL"] selectedImage:[UIImage imageNamed:@"tabbar_contacts"]];
+    self.contactsVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Contacts"
+                                                               image:[UIImage imageNamed:@"tabbar_contactsHL"]
+                                                       selectedImage:[UIImage imageNamed:@"tabbar_contacts"]];
     self.contactsVC.tabBarItem.tag = 1;
     [self unSelectedTapTabBarItems:self.contactsVC.tabBarItem];
     [self selectedTapTabBarItems:self.contactsVC.tabBarItem];
     
-    // Settings Screen
-    self.settingsVC = [[SettingsViewController alloc] init];
-    self.settingsVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"tabbar_settingHL"] selectedImage:[UIImage imageNamed:@"tabbar_setting"]];
-    self.settingsVC.tabBarItem.tag = 2;
-    self.settingsVC.view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    [self unSelectedTapTabBarItems:self.settingsVC.tabBarItem];
-    [self selectedTapTabBarItems:self.settingsVC.tabBarItem];
+//    // Settings Screen
+//    self.settingsVC = [[SettingsViewController alloc] init];
+//    self.settingsVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"tabbar_settingHL"] selectedImage:[UIImage imageNamed:@"tabbar_setting"]];
+//    self.settingsVC.tabBarItem.tag = 2;
+//    self.settingsVC.view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+//    [self unSelectedTapTabBarItems:self.settingsVC.tabBarItem];
+//    [self selectedTapTabBarItems:self.settingsVC.tabBarItem];
     
-    self.viewControllers = @[self.chatListVC, self.contactsVC, self.settingsVC];
+//    self.viewControllers = @[self.chatListVC, self.contactsVC, self.settingsVC];
+
+    self.viewControllers = @[self.contactsVC];
 }
 
 -(void)unSelectedTapTabBarItems:(UITabBarItem *)tabBarItem

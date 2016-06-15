@@ -39,7 +39,7 @@
 @property (strong, nonatomic) NSMutableArray *sectionTitles;
 @property (strong, nonatomic) NSMutableArray *contactsSource;
 
-@property (nonatomic) NSInteger unapplyCount;
+@property (nonatomic) NSInteger requestCount;
 @property (strong, nonatomic) EMSearchBar *searchBar;
 
 @property (strong, nonatomic) EMSearchDisplayController *searchController;
@@ -58,11 +58,13 @@
     _contactsSource = [NSMutableArray array];
     _sectionTitles = [NSMutableArray array];
     
-    [self searchController];
-    self.searchBar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
-    [self.view addSubview:self.searchBar];
+//    [self searchController];
+//    self.searchBar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
+//    [self.view addSubview:self.searchBar];
     
-    self.tableView.frame = CGRectMake(0, self.searchBar.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - self.searchBar.frame.size.height);
+//    self.tableView.frame = CGRectMake(0, self.searchBar.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - self.searchBar.frame.size.height);
+    
+    self.tableView.frame = self.view.frame;
     
     [[UserProfileManager sharedInstance] loadUserProfileInBackgroundWithBuddy:self.contactsSource saveToLoacal:YES completion:NULL];
 }
@@ -71,18 +73,12 @@
 {
     [super viewWillAppear:animated];
     
-    [self reloadApplyView];
+    [self reloadRequestCount];
     
     [[GAI sharedInstance].defaultTracker set:kGAIScreenName value:NSStringFromClass(self.class)];
     [[GAI sharedInstance].defaultTracker send:[[GAIDictionaryBuilder createScreenView] build]];
 }
 
-
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
 #pragma mark - getter
 
@@ -168,15 +164,13 @@
 #pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    // Return the number of sections.
     return [self.dataArray count] + 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // Return the number of rows in the section.
     if (section == 0) {
-        return 2;
+        return 1;
     }
     
     return [[self.dataArray objectAtIndex:(section - 1)] count];
@@ -184,40 +178,25 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 0) {
-        if (indexPath.row == 0) {
-            NSString *CellIdentifier = @"addFriend";
-            EaseUserCell *cell = (EaseUserCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-            if (cell == nil) {
-                cell = [[EaseUserCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-            }
-            cell.avatarView.image = [UIImage imageNamed:@"notificationIcon"];
-            cell.titleLabel.text = NSLocalizedString(@"title.apply", @"Requests and Notifications");
-            cell.avatarView.badge = self.unapplyCount;
-            return cell;
-        }
+    if (indexPath.section == 0)
+    {
+        NSString *CellIdentifier = @"addFriend";
         
-        NSString *CellIdentifier = @"commonCell";
         EaseUserCell *cell = (EaseUserCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         if (cell == nil) {
             cell = [[EaseUserCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         }
+        cell.avatarView.image = [UIImage imageNamed:@"notificationIcon"];
+        cell.titleLabel.text = @"Requests";
+        cell.avatarView.badge = self.requestCount;
         
-        if (indexPath.row == 1) {
-            cell.avatarView.image = [UIImage imageNamed:@"group"];
-            cell.titleLabel.text = NSLocalizedString(@"title.group", @"Group");
-        }
-        else if (indexPath.row == 2) {
-            cell.avatarView.image = [UIImage imageNamed:@"group"];
-            cell.titleLabel.text = NSLocalizedString(@"title.robotlist",@"robot list");
-        }
         return cell;
     }
-    else{
+    else
+    {
         NSString *CellIdentifier = [EaseUserCell cellIdentifierWithModel:nil];
+
         EaseUserCell *cell = (EaseUserCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        
-        // Configure the cell...
         if (cell == nil) {
             cell = [[EaseUserCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         }
@@ -234,7 +213,9 @@
         cell.model = model;
         
         return cell;
-    }}
+    }
+}
+
 
 #pragma mark - Table view delegate
 
@@ -399,19 +380,25 @@
 
 - (void)cellImageViewLongPressAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 0 && indexPath.row >= 1) {
-        return;
-    }
-    NSString *loginUsername = [[EMClient sharedClient] currentUsername];
-    EaseUserModel *model = [[self.dataArray objectAtIndex:(indexPath.section - 1)] objectAtIndex:indexPath.row];
-    if ([model.buddy isEqualToString:loginUsername])
-    {
-        return;
-    }
-    
-    _currentLongPressIndex = indexPath;
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"cancel", @"Cancel") destructiveButtonTitle:NSLocalizedString(@"friend.block", @"join the blacklist") otherButtonTitles:nil, nil];
-    [actionSheet showInView:[[UIApplication sharedApplication] keyWindow]];
+//    if (indexPath.section == 0 && indexPath.row >= 1) {
+//        return;
+//    }
+//    NSString *loginUsername = [[EMClient sharedClient] currentUsername];
+//    EaseUserModel *model = [[self.dataArray objectAtIndex:(indexPath.section - 1)] objectAtIndex:indexPath.row];
+//    if ([model.buddy isEqualToString:loginUsername])
+//    {
+//        return;
+//    }
+//    
+//    _currentLongPressIndex = indexPath;
+//    
+//    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+//                                                             delegate:self
+//                                                    cancelButtonTitle:NSLocalizedString(@"cancel", @"Cancel")
+//                                               destructiveButtonTitle:NSLocalizedString(@"friend.block", @"")
+//                                                    otherButtonTitles:nil, nil];
+//    
+//    [actionSheet showInView:[[UIApplication sharedApplication] keyWindow]];
 }
 
 #pragma mark - action
@@ -424,7 +411,7 @@
 
 #pragma mark - private data
 
-- (void)_sortDataArray:(NSArray *)buddyList
+- (void)sortDataArray:(NSArray *)buddyList
 {
     [self.dataArray removeAllObjects];
     [self.sectionTitles removeAllObjects];
@@ -503,7 +490,7 @@
     }
     
     _currentLongPressIndex = indexPath;
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"cancel", @"Cancel") destructiveButtonTitle:NSLocalizedString(@"friend.block", @"join the blacklist") otherButtonTitles:nil, nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"cancel", @"Cancel") destructiveButtonTitle:NSLocalizedString(@"friend.block", @"") otherButtonTitles:nil, nil];
     [actionSheet showInView:[[UIApplication sharedApplication] keyWindow]];
 }
 
@@ -512,13 +499,20 @@
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex != actionSheet.cancelButtonIndex && _currentLongPressIndex) {
+        
         EaseUserModel *model = [[self.dataArray objectAtIndex:(_currentLongPressIndex.section - 1)] objectAtIndex:_currentLongPressIndex.row];
+        
         [self showHudInView:self.view hint:NSLocalizedString(@"wait", @"Pleae wait...")];
+        
         __weak typeof(self) weakself = self;
+        
         [[EMClient sharedClient].contactManager asyncAddUserToBlackList:model.buddy relationshipBoth:YES success:^{
+            
             [weakself reloadDataSource];
             [weakself hideHud];
+            
         } failure:^(EMError *aError) {
+            
             [weakself hideHud];
             [weakself showHint:aError.errorDescription];
         }];
@@ -531,28 +525,28 @@
 - (void)tableViewDidTriggerHeaderRefresh
 {
     //    [self showHudInView:self.view hint:NSLocalizedString(@"loadData", @"Load data...")];
-    __weak typeof(self) weakself = self;
     [[EMClient sharedClient].contactManager asyncGetContactsFromServer:^(NSArray *aList) {
+        
         NSArray *buddyList = aList;
         [[EMClient sharedClient].contactManager asyncGetBlackListFromServer:^(NSArray *aList) {
-            [weakself.contactsSource removeAllObjects];
-            [weakself.contactsSource addObjectsFromArray:buddyList];
             
-            NSString *loginUsername = [[EMClient sharedClient] currentUsername];
-            if (loginUsername && loginUsername.length > 0) {
-                [weakself.contactsSource addObject:loginUsername];
-            }
-            [weakself _sortDataArray:self.contactsSource];
-            [weakself tableViewDidFinishTriggerHeader:YES reload:NO];
+            [self.contactsSource removeAllObjects];
+            [self.contactsSource addObjectsFromArray:buddyList];
+            
+            [self sortDataArray:self.contactsSource];
+            [self tableViewDidFinishTriggerHeader:YES reload:NO];
+            
         } failure:^(EMError *aError) {
-            [weakself showHint:NSLocalizedString(@"loadDataFailed", @"Load data failed.")];
-            [weakself reloadDataSource];
-            [weakself tableViewDidFinishTriggerHeader:YES reload:NO];
+            
+            [self showHint:NSLocalizedString(@"loadDataFailed", @"")];
+            [self reloadDataSource];
+            [self tableViewDidFinishTriggerHeader:YES reload:NO];
         }];
+        
     } failure:^(EMError *aError) {
-        [weakself showHint:NSLocalizedString(@"loadDataFailed", @"Load data failed.")];
-        [weakself reloadDataSource];
-        [weakself tableViewDidFinishTriggerHeader:YES reload:NO];
+        [self showHint:NSLocalizedString(@"loadDataFailed", @"")];
+        [self reloadDataSource];
+        [self tableViewDidFinishTriggerHeader:YES reload:NO];
     }];
 }
 
@@ -563,32 +557,21 @@
     [self.dataArray removeAllObjects];
     [self.contactsSource removeAllObjects];
     
-    NSArray *buddyList = [[EMClient sharedClient].contactManager getContactsFromDB];
+    self.contactsSource = [[[EMClient sharedClient].contactManager getContactsFromDB] mutableCopy];
     
-    for (NSString *buddy in buddyList) {
-        [self.contactsSource addObject:buddy];
-    }
-    
-    NSString *loginUsername = [[EMClient sharedClient] currentUsername];
-    if (loginUsername && loginUsername.length > 0) {
-        [self.contactsSource addObject:loginUsername];
-    }
-    
-    [self _sortDataArray:self.contactsSource];
+    [self sortDataArray:self.contactsSource];
     
     [self.tableView reloadData];
 }
 
-- (void)reloadApplyView
+- (void)reloadRequestCount
 {
-    NSInteger count = [[[FriendRequestViewController shareController] dataSource] count];
-    self.unapplyCount = count;
-    [self.tableView reloadData];
+    self.requestCount = [[[FriendRequestViewController shareController] dataSource] count];
 }
 
 - (void)reloadGroupView
 {
-    [self reloadApplyView];
+    [self reloadRequestCount];
     
     if (_groupController) {
         [_groupController reloadDataSource];
