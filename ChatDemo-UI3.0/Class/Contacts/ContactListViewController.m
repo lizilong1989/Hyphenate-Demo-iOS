@@ -170,14 +170,19 @@
         return [self.dataArray count] + 1;
     }
     else {
-        return 1;
+        return [self.dataArray count];
     }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (self.requestCount == 0 && section == 0) {
-        return [self.dataArray count];
+        if (self.dataArray.count == 0) {
+            return 0;
+        }
+        else {
+            return [[self.dataArray objectAtIndex:0] count];
+        }
     }
     else if (self.requestCount > 0 && section == 0) {
         return 1;
@@ -189,7 +194,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.requestCount != 0 && indexPath.section == 0)
+    if (self.requestCount > 0 && indexPath.section == 0)
     {
         NSString *CellIdentifier = @"addFriend";
         
@@ -213,7 +218,7 @@
             cell = (EMContactDetailedTableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
         }
         
-        long adjustedIndex = 0;
+        long adjustedIndex = indexPath.section;
         if (self.requestCount > 0) {
             adjustedIndex = indexPath.section - 1;
         }
@@ -250,32 +255,32 @@
     return 100;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    if (section == 0) {
-        return 0;
-    }
-    else {
-        return 22;
-    }
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    if (section == 0) {
-        return nil;
-    }
-    
-    UIView *contentView = [[UIView alloc] init];
-    [contentView setBackgroundColor:[UIColor HIGrayLightColor]];
-    
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 100, 22)];
-    label.backgroundColor = [UIColor clearColor];
-    [label setText:[self.sectionTitles objectAtIndex:(section - 1)]];
-    [contentView addSubview:label];
-    
-    return contentView;
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+//{
+//    if (section == 0) {
+//        return 0;
+//    }
+//    else {
+//        return 22;
+//    }
+//}
+//
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+//{
+//    if (section == 0) {
+//        return nil;
+//    }
+//    
+//    UIView *contentView = [[UIView alloc] init];
+//    [contentView setBackgroundColor:[UIColor HIGrayLightColor]];
+//    
+//    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 100, 22)];
+//    label.backgroundColor = [UIColor clearColor];
+//    [label setText:[self.sectionTitles objectAtIndex:(section - 1)]];
+//    [contentView addSubview:label];
+//    
+//    return contentView;
+//}
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -288,6 +293,7 @@
     
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
+    
     if (self.requestCount > 0 && section == 0) {
         if (row == 0) {
             [self.navigationController pushViewController:[FriendRequestViewController shareController] animated:YES];
@@ -308,11 +314,13 @@
             [self.navigationController pushViewController:robot animated:YES];
         }
     }
-    else if (self.requestCount == 0 && section == 0) {
-        long adjustedIndex = 0;
+    else {
+        
+        long adjustedIndex = section;
         if (self.requestCount > 0) {
             adjustedIndex = section - 1;
         }
+        
         EaseUserModel *model = [[self.dataArray objectAtIndex:adjustedIndex] objectAtIndex:row];
         NSString *loginUsername = [[EMClient sharedClient] currentUsername];
         if (loginUsername && loginUsername.length > 0) {
