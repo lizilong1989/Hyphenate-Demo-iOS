@@ -1,20 +1,20 @@
 {
-  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++99E78EF",
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++96F23FF",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
-    "92334988EDD5CB8BE7DDA5DFC6599FAE8259256F+++A718D00" : 0,
-    "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++99E78EF" : 0,
-    "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++4C446D7" : 0,
-    "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++2896FF2" : 0
+    "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++D47FED9" : 0,
+    "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++96F23FF" : 0,
+    "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++D033EB5" : 0,
+    "92334988EDD5CB8BE7DDA5DFC6599FAE8259256F+++F1208F6" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "6840FEF8-ECB0-494E-906F-C195F62A6BDB",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "92334988EDD5CB8BE7DDA5DFC6599FAE8259256F+++A718D00" : "easeui_ios\/",
-    "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++99E78EF" : "Hyphenate-Demo-IM\/",
-    "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++4C446D7" : "sdkdemoapp3.0_ios\/",
-    "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++2896FF2" : "sdkdemoapp3.0_ios\/"
+    "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++D47FED9" : "sdkdemoapp3.0_ios\/",
+    "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++96F23FF" : "Hyphenate-Demo-IM\/",
+    "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++D033EB5" : "sdkdemoapp3.0_ios\/",
+    "92334988EDD5CB8BE7DDA5DFC6599FAE8259256F+++F1208F6" : "easeui_ios\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "ChatDemo-UI3.0",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
@@ -23,22 +23,22 @@
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/HyphenateInc\/easeui_ios.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "92334988EDD5CB8BE7DDA5DFC6599FAE8259256F+++A718D00"
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "92334988EDD5CB8BE7DDA5DFC6599FAE8259256F+++F1208F6"
     },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/HyphenateInc\/Hyphenate-Demo-IM.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++2896FF2"
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++96F23FF"
     },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/easemob\/sdkdemoapp3.0_ios.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++4C446D7"
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++D033EB5"
     },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/HyphenateInc\/Hyphenate-Demo-IM.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++99E78EF"
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++D47FED9"
     }
   ]
 }
