@@ -288,7 +288,7 @@
     
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
-    if (self.requestCount != 0 && section == 0) {
+    if (self.requestCount > 0 && section == 0) {
         if (row == 0) {
             [self.navigationController pushViewController:[FriendRequestViewController shareController] animated:YES];
         }
@@ -308,8 +308,12 @@
             [self.navigationController pushViewController:robot animated:YES];
         }
     }
-    else {
-        EaseUserModel *model = [[self.dataArray objectAtIndex:(section - 1)] objectAtIndex:row];
+    else if (self.requestCount == 0 && section == 0) {
+        long adjustedIndex = 0;
+        if (self.requestCount > 0) {
+            adjustedIndex = section - 1;
+        }
+        EaseUserModel *model = [[self.dataArray objectAtIndex:adjustedIndex] objectAtIndex:row];
         NSString *loginUsername = [[EMClient sharedClient] currentUsername];
         if (loginUsername && loginUsername.length > 0) {
             if ([loginUsername isEqualToString:model.buddy]) {
@@ -592,6 +596,8 @@
 - (void)reloadRequestCount
 {
     self.requestCount = [[[FriendRequestViewController shareController] dataSource] count];
+    
+    [self.tableView reloadData];
 }
 
 - (void)reloadGroupView
