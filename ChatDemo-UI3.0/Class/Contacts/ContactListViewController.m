@@ -21,6 +21,7 @@
 #import "UserProfileManager.h"
 #import "RealtimeSearchUtil.h"
 #import "UserProfileManager.h"
+#import "EMContactDetailedTableViewCell.h"
 
 @implementation NSString (search)
 
@@ -194,24 +195,30 @@
     }
     else
     {
-        NSString *CellIdentifier = [EaseUserCell cellIdentifierWithModel:nil];
-
-        EaseUserCell *cell = (EaseUserCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        if (cell == nil) {
-            cell = [[EaseUserCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        NSString *cellIdentifier = [EMContactDetailedTableViewCell cellIdentifier];
+        EMContactDetailedTableViewCell *cell = (EMContactDetailedTableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+        if (!cell) {
+            [tableView registerNib:[UINib nibWithNibName:NSStringFromClass([EMContactDetailedTableViewCell class]) bundle:nil] forCellReuseIdentifier:cellIdentifier];
+            cell = [[EMContactDetailedTableViewCell alloc] init];
         }
         
         NSArray *userSection = [self.dataArray objectAtIndex:(indexPath.section - 1)];
+        
         EaseUserModel *model = [userSection objectAtIndex:indexPath.row];
         UserProfileEntity *profileEntity = [[UserProfileManager sharedInstance] getUserProfileByUsername:model.buddy];
         if (profileEntity) {
             model.avatarURLPath = profileEntity.imageUrl;
-            model.nickname = profileEntity.nickname == nil ? profileEntity.username : profileEntity.nickname;
+            model.nickname = profileEntity.nickname ? profileEntity.nickname : profileEntity.username;
         }
         cell.indexPath = indexPath;
         cell.delegate = self;
         cell.model = model;
+        cell.avatarView.image = [UIImage imageNamed:@"user"];
+        cell.titleLabel.text = @"sometime";
+        cell.avatarView.badge = 1;
         
+//        EMConversation *conversation = [[EMClient sharedClient].chatManager getConversation:conversationChatter type:conversationType createIfNotExist:YES];
+
         return cell;
     }
 }
