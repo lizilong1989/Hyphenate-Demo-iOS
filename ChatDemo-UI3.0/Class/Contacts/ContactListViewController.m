@@ -163,23 +163,33 @@
 }
 
 #pragma mark - Table view data source
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [self.dataArray count] + 1;
+    if (self.requestCount > 0) {
+        return [self.dataArray count] + 1;
+    }
+    else {
+        return 1;
+    }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (section == 0) {
+    if (self.requestCount == 0 && section == 0) {
+        return [self.dataArray count];
+    }
+    else if (self.requestCount > 0 && section == 0) {
         return 1;
     }
-    
-    return [[self.dataArray objectAtIndex:(section - 1)] count];
+    else {
+        return [[self.dataArray objectAtIndex:(section - 1)] count];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 0)
+    if (self.requestCount != 0 && indexPath.section == 0)
     {
         NSString *CellIdentifier = @"addFriend";
         
@@ -195,22 +205,20 @@
     }
     else
     {
-
-        
         NSString *cellIdentifier = [EMContactDetailedTableViewCell cellIdentifier];
         EMContactDetailedTableViewCell *cell = (EMContactDetailedTableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
 
         if (!cell) {
-//            cell = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass([EMContactDetailedTableViewCell class]) owner:self options:nil] objectAtIndex:0];
-
-
             [tableView registerNib:[UINib nibWithNibName:NSStringFromClass([EMContactDetailedTableViewCell class]) bundle:nil] forCellReuseIdentifier:cellIdentifier];
             cell = (EMContactDetailedTableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
         }
         
-
+        long adjustedIndex = 0;
+        if (self.requestCount > 0) {
+            adjustedIndex = indexPath.section - 1;
+        }
         
-        NSArray *userSection = [self.dataArray objectAtIndex:(indexPath.section - 1)];
+        NSArray *userSection = [self.dataArray objectAtIndex:adjustedIndex];
         
         EaseUserModel *model = [userSection objectAtIndex:indexPath.row];
         UserProfileEntity *profileEntity = [[UserProfileManager sharedInstance] getUserProfileByUsername:model.buddy];
@@ -221,8 +229,6 @@
         cell.indexPath = indexPath;
         cell.delegate = self;
         cell.model = model;
-        cell.avatarView.image = [UIImage imageNamed:@"user"];
-        cell.titleLabel.text = @"sometime";
         cell.avatarView.badge = 1;
         
 //        EMConversation *conversation = [[EMClient sharedClient].chatManager getConversation:conversationChatter type:conversationType createIfNotExist:YES];
@@ -237,6 +243,11 @@
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
     return self.sectionTitles;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 100;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -277,7 +288,7 @@
     
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
-    if (section == 0) {
+    if (self.requestCount != 0 && section == 0) {
         if (row == 0) {
             [self.navigationController pushViewController:[FriendRequestViewController shareController] animated:YES];
         }
@@ -297,7 +308,7 @@
             [self.navigationController pushViewController:robot animated:YES];
         }
     }
-    else{
+    else {
         EaseUserModel *model = [[self.dataArray objectAtIndex:(section - 1)] objectAtIndex:row];
         NSString *loginUsername = [[EMClient sharedClient] currentUsername];
         if (loginUsername && loginUsername.length > 0) {
@@ -539,7 +550,6 @@
 
 - (void)tableViewDidTriggerHeaderRefresh
 {
-    //    [self showHudInView:self.view hint:NSLocalizedString(@"loadData", @"Load data...")];
     [[EMClient sharedClient].contactManager asyncGetContactsFromServer:^(NSArray *aList) {
         
         NSArray *buddyList = aList;
