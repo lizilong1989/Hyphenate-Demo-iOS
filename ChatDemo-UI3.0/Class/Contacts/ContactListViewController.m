@@ -52,7 +52,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
     // Do any additional setup after loading the view.
     self.showRefreshHeader = YES;
     
@@ -195,12 +195,20 @@
     }
     else
     {
+
+        
         NSString *cellIdentifier = [EMContactDetailedTableViewCell cellIdentifier];
         EMContactDetailedTableViewCell *cell = (EMContactDetailedTableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+
         if (!cell) {
+//            cell = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass([EMContactDetailedTableViewCell class]) owner:self options:nil] objectAtIndex:0];
+
+
             [tableView registerNib:[UINib nibWithNibName:NSStringFromClass([EMContactDetailedTableViewCell class]) bundle:nil] forCellReuseIdentifier:cellIdentifier];
-            cell = [[EMContactDetailedTableViewCell alloc] init];
+            cell = (EMContactDetailedTableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
         }
+        
+
         
         NSArray *userSection = [self.dataArray objectAtIndex:(indexPath.section - 1)];
         
