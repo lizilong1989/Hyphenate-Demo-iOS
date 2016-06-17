@@ -53,7 +53,7 @@ static NSString *kGroupName = @"GroupName";
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
 //    self.title = NSLocalizedString(@"title.conversation", @"Chats");
-    self.title = @"Favorites";
+    self.title = @"Secret Lovers";
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setupUntreatedApplyCount) name:@"setupUntreatedApplyCount" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUnreadMessageCount:) name:kNotification_unreadMessageCountUpdated object:nil];
@@ -136,7 +136,7 @@ static NSString *kGroupName = @"GroupName";
     
     // Contacts screen
     self.contactsVC = [[ContactListViewController alloc] initWithNibName:nil bundle:nil];
-    self.contactsVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Contacts"
+    self.contactsVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Admirers"
                                                                image:[UIImage imageNamed:@"tabbar_contactsHL"]
                                                        selectedImage:[UIImage imageNamed:@"tabbar_contacts"]];
     self.contactsVC.tabBarItem.tag = 1;

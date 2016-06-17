@@ -250,10 +250,26 @@
         cell.userModel = userModel;
         
         // Load mock user data
-        cell.avatarView.image = [UIImage imageNamed:userModel.nickname];
+        [self loadMockData:userModel.nickname cell:cell];
         
         return cell;
     }
+}
+
+- (void)loadMockData:(NSString *)username cell:(EMContactDetailedTableViewCell *)cell
+{
+    cell.avatarView.image = [UIImage imageNamed:username];
+
+    if ([username isEqualToString:@"boredpanda"]) {
+        cell.locationLabel.text = @"Lonely Planet";
+    }
+    else if ([username isEqualToString:@"princess"]) {
+        cell.locationLabel.text = @"Castle, Disney World";
+    }
+    else {
+        cell.locationLabel.text = @"San Francisco, CA";
+    }
+
 }
 
 
