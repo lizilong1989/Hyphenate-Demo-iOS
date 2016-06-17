@@ -140,7 +140,7 @@
     
 //    EMRobot *robot = [self.dataSource objectAtIndex:indexPath.row];
 //    ChatViewController *chatVC = [[RobotChatViewController alloc]
-//                                  initWithConversationChatter:robot.username
+//                                  initWithConversationID:robot.username
 //                                  conversationType:eConversationTypeChat];
 //    if ([robot.nickname length]) {
 //        chatVC.title = robot.nickname;

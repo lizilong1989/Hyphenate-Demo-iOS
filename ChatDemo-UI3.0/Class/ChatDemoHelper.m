@@ -16,7 +16,6 @@
 #import "FriendRequestViewController.h"
 #import "MBProgressHUD.h"
 
-
 #if DEMO_CALL == 1
 
 #import "CallViewController.h"
@@ -104,19 +103,28 @@ static ChatDemoHelper *helper = nil;
 {
     __weak typeof(self) weakself = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSArray *array = [[EMClient sharedClient].chatManager loadAllConversationsFromDB];
-        [array enumerateObjectsUsingBlock:^(EMConversation *conversation, NSUInteger idx, BOOL *stop){
-            if(conversation.latestMessage == nil){
+        
+        NSArray *conversationsFromDB = [[EMClient sharedClient].chatManager loadAllConversationsFromDB];
+        
+        [conversationsFromDB enumerateObjectsUsingBlock:^(EMConversation *conversation, NSUInteger idx, BOOL *stop){
+            if(!conversation.latestMessage){
                 [[EMClient sharedClient].chatManager deleteConversation:conversation.conversationId deleteMessages:NO];
             }
         }];
-        dispatch_async(dispatch_get_main_queue(), ^{
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            
+            NSArray *conversations = [[EMClient sharedClient].chatManager getAllConversations];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_conversationUpdated object:conversations];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_unreadMessageCountUpdated object:conversations];
+        
             if (weakself.conversationListVC) {
                 [weakself.conversationListVC refreshDataSource];
             }
             
             if (weakself.mainVC) {
-                [weakself.mainVC setupUnreadMessageCount];
+                [weakself.mainVC updateUnreadMessageCount:nil];
             }
         });
     });
@@ -172,7 +180,7 @@ static ChatDemoHelper *helper = nil;
 - (void)didUpdateConversationList:(NSArray *)aConversationList
 {
     if (self.mainVC) {
-        [self.mainVC setupUnreadMessageCount];
+        [self.mainVC updateUnreadMessageCount:nil];
     }
     
     if (self.conversationListVC) {
@@ -224,7 +232,7 @@ static ChatDemoHelper *helper = nil;
             }
             
             if (self.mainVC) {
-                [self.mainVC setupUnreadMessageCount];
+                [self.mainVC updateUnreadMessageCount:nil];
             }
             return;
         }
@@ -240,7 +248,7 @@ static ChatDemoHelper *helper = nil;
         }
         
         if (self.mainVC) {
-            [self.mainVC setupUnreadMessageCount];
+            [self.mainVC updateUnreadMessageCount:nil];
         }
     }
 }

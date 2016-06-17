@@ -152,7 +152,7 @@
             }
             
             [weakSelf.searchController.searchBar endEditing:YES];
-            ChatViewController *chatVC = [[ChatViewController alloc] initWithConversationChatter:buddy
+            ChatViewController *chatVC = [[ChatViewController alloc] initWithConversationID:buddy
                                                                                 conversationType:EMConversationTypeChat];
             chatVC.title = [[UserProfileManager sharedInstance] getNickNameWithUsername:buddy];
             [weakSelf.navigationController pushViewController:chatVC animated:YES];
@@ -225,19 +225,25 @@
         
         NSArray *userSection = [self.dataArray objectAtIndex:adjustedIndex];
         
-        EaseUserModel *model = [userSection objectAtIndex:indexPath.row];
-        UserProfileEntity *profileEntity = [[UserProfileManager sharedInstance] getUserProfileByUsername:model.buddy];
+        EaseUserModel *userModel = [userSection objectAtIndex:indexPath.row];
+        UserProfileEntity *profileEntity = [[UserProfileManager sharedInstance] getUserProfileByUsername:userModel.buddy];
         if (profileEntity) {
-            model.avatarURLPath = profileEntity.imageUrl;
-            model.nickname = profileEntity.nickname ? profileEntity.nickname : profileEntity.username;
+            userModel.avatarURLPath = profileEntity.imageUrl;
+            userModel.nickname = profileEntity.nickname ? profileEntity.nickname : profileEntity.username;
         }
         cell.indexPath = indexPath;
         cell.delegate = self;
-        cell.model = model;
-        cell.avatarView.badge = 1;
+        cell.userModel = userModel;
         
-//        EMConversation *conversation = [[EMClient sharedClient].chatManager getConversation:conversationChatter type:conversationType createIfNotExist:YES];
+        //
+//        cell.avatarView.badge = conversationModel.conversation.unreadMessagesCount;
 
+//        EMConversation *conversation = [[EMClient sharedClient].chatManager getConversation:conversationID type:conversationType createIfNotExist:YES];
+
+        
+        // Mock user data
+        cell.avatarView.image = [UIImage imageNamed:userModel.nickname];
+        
         return cell;
     }
 }
@@ -252,7 +258,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 100;
+    return 150;
 }
 
 //- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -321,18 +327,31 @@
             adjustedIndex = section - 1;
         }
         
-        EaseUserModel *model = [[self.dataArray objectAtIndex:adjustedIndex] objectAtIndex:row];
+        EaseUserModel *userModel = [[self.dataArray objectAtIndex:adjustedIndex] objectAtIndex:row];
+        
         NSString *loginUsername = [[EMClient sharedClient] currentUsername];
+        
         if (loginUsername && loginUsername.length > 0) {
-            if ([loginUsername isEqualToString:model.buddy]) {
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"prompt", @"Prompt") message:NSLocalizedString(@"friend.notChatSelf", @"can't talk to yourself") delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil, nil];
+            
+            if ([loginUsername isEqualToString:userModel.buddy]) {
+                
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"prompt", @"Prompt")
+                                                                    message:NSLocalizedString(@"friend.notChatSelf", @"can't talk to yourself")
+                                                                   delegate:nil
+                                                          cancelButtonTitle:NSLocalizedString(@"ok", @"OK")
+                                                          otherButtonTitles:nil, nil];
+                
                 [alertView show];
                 
                 return;
             }
         }
-        ChatViewController *chatController = [[ChatViewController alloc] initWithConversationChatter:model.buddy conversationType:EMConversationTypeChat];
-        chatController.title = model.nickname.length > 0 ? model.nickname : model.buddy;
+        
+        ChatViewController *chatController = [[ChatViewController alloc] initWithConversationID:userModel.buddy
+                                                                                    conversationType:EMConversationTypeChat];
+        
+        chatController.title = userModel.nickname.length > 0 ? userModel.nickname : userModel.buddy;
+        
         [self.navigationController pushViewController:chatController animated:YES];
     }
 }
@@ -586,6 +605,51 @@
         [self tableViewDidFinishTriggerHeader:YES reload:NO];
     }];
 }
+
+//- (void)updateMessageCount
+//{
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        
+//        NSArray *conversations = [[EMClient sharedClient].chatManager getAllConversations];
+//        
+//        NSArray* sorted = [conversations sortedArrayUsingComparator:
+//                           ^(EMConversation *obj1, EMConversation* obj2){
+//                               EMMessage *message1 = [obj1 latestMessage];
+//                               EMMessage *message2 = [obj2 latestMessage];
+//                               if(message1.timestamp > message2.timestamp) {
+//                                   return(NSComparisonResult)NSOrderedAscending;
+//                               }else {
+//                                   return(NSComparisonResult)NSOrderedDescending;
+//                               }
+//                           }];
+//        
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            
+//            [self.dataArray removeAllObjects];
+//            
+//            for (EMConversation *converstion in sorted) {
+//                
+//                EaseConversationModel *model = nil;
+//                
+//                if (self.dataSource && [self.dataSource respondsToSelector:@selector(conversationListViewController:modelForConversation:)]) {
+//                    model = [self.dataSource conversationListViewController:self
+//                                                       modelForConversation:converstion];
+//                }
+//                else {
+//                    model = [[EaseConversationModel alloc] initWithConversation:converstion];
+//                }
+//                
+//                if (model) {
+//                    [self.dataArray addObject:model];
+//                }
+//            }
+//            
+//            [self.tableView reloadData];
+//            
+//            [self tableViewDidFinishTriggerHeader:YES reload:NO];
+//        });
+//    });
+//}
 
 #pragma mark - public
 

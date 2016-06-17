@@ -19,7 +19,7 @@
 
 - (void)setupUntreatedApplyCount;
 
-- (void)setupUnreadMessageCount;
+- (void)updateUnreadMessageCount:(NSNotification *)notification;
 
 - (void)networkChanged:(EMConnectionState)connectionState;
 

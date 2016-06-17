@@ -199,7 +199,7 @@
             if (indexPath.section == 0) {
                 EMMessage *message = [weakSelf.searchController.resultsSource objectAtIndex:indexPath.row];
             
-                SearchChatViewController *chatView = [[SearchChatViewController alloc] initWithConversationChatter:weakSelf.conversation.conversationId conversationType:weakSelf.conversation.type fromMessageId:message.messageId];
+                SearchChatViewController *chatView = [[SearchChatViewController alloc] initWithConversationID:weakSelf.conversation.conversationId conversationType:weakSelf.conversation.type fromMessageId:message.messageId];
                 [weakSelf.navigationController pushViewController:chatView animated:YES];
             }
             else {

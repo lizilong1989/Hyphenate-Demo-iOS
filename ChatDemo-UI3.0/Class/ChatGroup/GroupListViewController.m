@@ -155,7 +155,7 @@
             [weakSelf.searchController.searchBar endEditing:YES];
             
             EMGroup *group = [weakSelf.searchController.resultsSource objectAtIndex:indexPath.row];
-            ChatViewController *chatVC = [[ChatViewController alloc] initWithConversationChatter:group.groupId
+            ChatViewController *chatVC = [[ChatViewController alloc] initWithConversationID:group.groupId
                                                                                 conversationType:EMConversationTypeGroupChat];
             chatVC.title = group.subject;
             [weakSelf.navigationController pushViewController:chatVC animated:YES];
@@ -249,7 +249,7 @@
         }
     } else {
         EMGroup *group = [self.dataSource objectAtIndex:indexPath.row];
-        ChatViewController *chatController = [[ChatViewController alloc] initWithConversationChatter:group.groupId
+        ChatViewController *chatController = [[ChatViewController alloc] initWithConversationID:group.groupId
                                                                                     conversationType:EMConversationTypeGroupChat];
         chatController.title = group.subject;
         [self.navigationController pushViewController:chatController animated:YES];

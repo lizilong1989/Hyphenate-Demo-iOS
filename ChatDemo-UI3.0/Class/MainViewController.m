@@ -56,7 +56,7 @@ static NSString *kGroupName = @"GroupName";
     self.title = @"Favorites";
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setupUntreatedApplyCount) name:@"setupUntreatedApplyCount" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setupUnreadMessageCount) name:@"setupUnreadMessageCount" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUnreadMessageCount:) name:kNotification_unreadMessageCountUpdated object:nil];
     
     [self setupTabBars];
     
@@ -69,7 +69,7 @@ static NSString *kGroupName = @"GroupName";
                                                                             action:@selector(addFriendAction)];
     self.navigationItem.rightBarButtonItem = self.addFriendItem;
 
-    [self setupUnreadMessageCount];
+    [self updateUnreadMessageCount:nil];
     [self setupUntreatedApplyCount];
     
     [ChatDemoHelper shareHelper].contactViewVC = self.contactsVC;
@@ -166,9 +166,10 @@ static NSString *kGroupName = @"GroupName";
     [tabBarItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIFont systemFontOfSize:14], NSFontAttributeName, [UIColor HIPrimaryColor], NSForegroundColorAttributeName, nil] forState:UIControlStateSelected];
 }
 
--(void)setupUnreadMessageCount
+- (void)updateUnreadMessageCount:(NSNotification *)notification
 {
     NSArray *conversations = [[EMClient sharedClient].chatManager getAllConversations];
+    
     NSInteger unreadCount = 0;
     for (EMConversation *conversation in conversations) {
         unreadCount += conversation.unreadMessagesCount;
@@ -391,7 +392,7 @@ static NSString *kGroupName = @"GroupName";
                     {
                         [self.navigationController popViewControllerAnimated:NO];
                         EMChatType messageType = [userInfo[kMessageType] intValue];
-                        chatViewController = [[ChatViewController alloc] initWithConversationChatter:conversationChatter conversationType:[self conversationTypeFromMessageType:messageType]];
+                        chatViewController = [[ChatViewController alloc] initWithConversationID:conversationChatter conversationType:[self conversationTypeFromMessageType:messageType]];
                         switch (messageType) {
                             case EMChatTypeChat:
                                 {
@@ -418,7 +419,7 @@ static NSString *kGroupName = @"GroupName";
                 ChatViewController *chatViewController = (ChatViewController *)obj;
                 NSString *conversationChatter = userInfo[kConversationChatter];
                 EMChatType messageType = [userInfo[kMessageType] intValue];
-                chatViewController = [[ChatViewController alloc] initWithConversationChatter:conversationChatter conversationType:[self conversationTypeFromMessageType:messageType]];
+                chatViewController = [[ChatViewController alloc] initWithConversationID:conversationChatter conversationType:[self conversationTypeFromMessageType:messageType]];
                 switch (messageType) {
                     case EMChatTypeGroupChat:
                     {

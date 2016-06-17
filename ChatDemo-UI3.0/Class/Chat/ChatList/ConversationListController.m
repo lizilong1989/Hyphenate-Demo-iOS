@@ -186,10 +186,10 @@
             EMConversation *conversation = model.conversation;
             ChatViewController *chatController;
             if ([[RobotManager sharedInstance] isRobotWithUsername:conversation.conversationId]) {
-                chatController = [[RobotChatViewController alloc] initWithConversationChatter:conversation.conversationId conversationType:conversation.type];
+                chatController = [[RobotChatViewController alloc] initWithConversationID:conversation.conversationId conversationType:conversation.type];
                 chatController.title = [[RobotManager sharedInstance] getRobotNickWithUsername:conversation.conversationId];
             }else {
-                chatController = [[ChatViewController alloc] initWithConversationChatter:conversation.conversationId conversationType:conversation.type];
+                chatController = [[ChatViewController alloc] initWithConversationID:conversation.conversationId conversationType:conversation.type];
                 chatController.title = [conversation showName];
             }
             [weakSelf.navigationController pushViewController:chatController animated:YES];
@@ -211,11 +211,11 @@
         EMConversation *conversation = conversationModel.conversation;
         if (conversation) {
             if ([[RobotManager sharedInstance] isRobotWithUsername:conversation.conversationId]) {
-                RobotChatViewController *chatController = [[RobotChatViewController alloc] initWithConversationChatter:conversation.conversationId conversationType:conversation.type];
+                RobotChatViewController *chatController = [[RobotChatViewController alloc] initWithConversationID:conversation.conversationId conversationType:conversation.type];
                 chatController.title = [[RobotManager sharedInstance] getRobotNickWithUsername:conversation.conversationId];
                 [self.navigationController pushViewController:chatController animated:YES];
             } else {
-                ChatViewController *chatController = [[ChatViewController alloc] initWithConversationChatter:conversation.conversationId conversationType:conversation.type];
+                ChatViewController *chatController = [[ChatViewController alloc] initWithConversationID:conversation.conversationId conversationType:conversation.type];
                 chatController.title = conversationModel.title;
                 [self.navigationController pushViewController:chatController animated:YES];
             }
@@ -311,7 +311,6 @@
     if (lastMessage) {
         latestMessageTime = [NSDate formattedTimeFromTimeInterval:lastMessage.timestamp];
     }
-
     
     return latestMessageTime;
 }

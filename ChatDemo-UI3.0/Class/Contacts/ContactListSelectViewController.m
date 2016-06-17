@@ -58,7 +58,7 @@
             [[EMClient sharedClient].chatManager asyncSendMessage:message progress:nil completion:^(EMMessage *aMessage, EMError *aError) {
                 if (!aError) {
                     NSMutableArray *array = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
-                    ChatViewController *chatController = [[ChatViewController alloc] initWithConversationChatter:userModel.buddy conversationType:EMConversationTypeChat];
+                    ChatViewController *chatController = [[ChatViewController alloc] initWithConversationID:userModel.buddy conversationType:EMConversationTypeChat];
                     chatController.title = userModel.nickname.length != 0 ? [userModel.nickname copy] : [userModel.buddy copy];
                     if ([array count] >= 3) {
                         [array removeLastObject];
@@ -83,7 +83,7 @@
             [[EMClient sharedClient].chatManager asyncSendMessage:message progress:nil completion:^(EMMessage *message, EMError *error) {
                 if (!error) {
                     NSMutableArray *array = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
-                    ChatViewController *chatController = [[ChatViewController alloc] initWithConversationChatter:userModel.buddy conversationType:EMConversationTypeChat];
+                    ChatViewController *chatController = [[ChatViewController alloc] initWithConversationID:userModel.buddy conversationType:EMConversationTypeChat];
                     chatController.title = userModel.nickname.length != 0 ? userModel.nickname : userModel.buddy;
                     if ([array count] >= 3) {
                         [array removeLastObject];
