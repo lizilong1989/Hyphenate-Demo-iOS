@@ -66,7 +66,9 @@
 //    self.tableView.frame = CGRectMake(0, self.searchBar.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - self.searchBar.frame.size.height);
     
     self.tableView.frame = self.view.frame;
-    
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.backgroundColor = [UIColor HIGrayLightColor];
+
     [[UserProfileManager sharedInstance] loadUserProfileInBackgroundOfUser:self.contactsSource saveToLoacal:YES completion:NULL];
     
     [[EMClient sharedClient].chatManager addDelegate:self delegateQueue:nil];
@@ -124,7 +126,6 @@
             static NSString *CellIdentifier = @"ContactListCell";
             BaseTableViewCell *cell = (BaseTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
             
-            // Configure the cell...
             if (cell == nil) {
                 cell = [[BaseTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
             }
@@ -231,6 +232,8 @@
             cell = (EMContactDetailedTableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
         }
         cell.userModel = nil;
+        cell.profileInfoContainer.layer.cornerRadius = 10;
+        cell.profileInfoContainer.layer.masksToBounds = YES;
         
         long adjustedIndex = indexPath.section;
         if (self.requestCount > 0) {
@@ -259,17 +262,24 @@
 - (void)loadMockData:(NSString *)username cell:(EMContactDetailedTableViewCell *)cell
 {
     cell.avatarView.image = [UIImage imageNamed:username];
+    cell.avatarView.imageCornerRadius = 10.0f;
 
     if ([username isEqualToString:@"boredpanda"]) {
         cell.locationLabel.text = @"Lonely Planet";
+        cell.aboutMeLabel.text = @"well, it's me, Panda. I'm bored after eating bamboo day in and day out.";
     }
     else if ([username isEqualToString:@"princess"]) {
         cell.locationLabel.text = @"Castle, Disney World";
+        cell.aboutMeLabel.text = @"Hi, I'm princess. I'm kind, pretty, speak well, stand in good posture, have good manner, and have good food etiquette, so I eat really really slow.";
+    }
+    else if ([username isEqualToString:@"puppylife"]) {
+        cell.locationLabel.text = @"San Francisco, CA";
+        cell.aboutMeLabel.text = @"woof, woof. where's the squirrel?";
     }
     else {
+        cell.aboutMeLabel.text = @"Hi, I'm an awesome developer work in tech";
         cell.locationLabel.text = @"San Francisco, CA";
     }
-
 }
 
 
