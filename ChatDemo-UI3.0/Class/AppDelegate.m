@@ -74,7 +74,7 @@ static int const kGaDispatchPeriod = 30;
     [self initializeGoogleAnalytics];
 
     // Crashlytics
-//    [Fabric with:@[[Crashlytics class]]];
+    [Fabric with:@[[Crashlytics class]]];
     
     return YES;
 }

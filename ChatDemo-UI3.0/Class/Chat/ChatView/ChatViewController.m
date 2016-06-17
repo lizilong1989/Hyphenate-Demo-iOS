@@ -19,15 +19,13 @@
 #import "ChatDemoHelper.h"
 
 @interface ChatViewController ()<UIAlertViewDelegate, EaseMessageViewControllerDelegate, EaseMessageViewControllerDataSource,EMClientDelegate>
-{
-    UIMenuItem *_copyMenuItem;
-    UIMenuItem *_deleteMenuItem;
-    UIMenuItem *_transpondMenuItem;
-}
 
 @property (nonatomic) BOOL isPlayingAudio;
 
-@property (nonatomic) NSMutableDictionary *emotionDic;
+@property (nonatomic, strong) NSMutableDictionary *emotionDic;
+@property (nonatomic, strong) UIMenuItem *menuItemCopy;
+@property (nonatomic, strong) UIMenuItem *menuItemDelete;
+@property (nonatomic, strong) UIMenuItem *menuItemForward;
 
 @end
 
@@ -327,7 +325,7 @@
     }
 }
 
-- (void)transpondMenuAction:(id)sender
+- (void)forwardMenuAction:(id)sender
 {
     if (self.menuIndexPath && self.menuIndexPath.row > 0) {
         
@@ -431,26 +429,26 @@
         self.menuController = [UIMenuController sharedMenuController];
     }
     
-    if (_deleteMenuItem == nil) {
-        _deleteMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"delete", @"Delete") action:@selector(deleteMenuAction:)];
+    if (self.menuItemDelete == nil) {
+        self.menuItemDelete = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"delete", @"Delete") action:@selector(deleteMenuAction:)];
     }
     
-    if (_copyMenuItem == nil) {
-        _copyMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"copy", @"Copy") action:@selector(copyMenuAction:)];
+    if (self.menuItemCopy == nil) {
+        self.menuItemCopy = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"copy", @"Copy") action:@selector(copyMenuAction:)];
     }
     
-    if (_transpondMenuItem == nil) {
-        _transpondMenuItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"forward", @"Forward") action:@selector(transpondMenuAction:)];
+    if (self.menuItemForward == nil) {
+        self.menuItemForward = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"forward", @"Forward") action:@selector(forwardMenuAction:)];
     }
     
     if (messageType == EMMessageBodyTypeText) {
-        [self.menuController setMenuItems:@[_copyMenuItem, _deleteMenuItem,_transpondMenuItem]];
+        [self.menuController setMenuItems:@[self.menuItemCopy, self.menuItemDelete, self.menuItemForward]];
     }
     else if (messageType == EMMessageBodyTypeImage){
-        [self.menuController setMenuItems:@[_deleteMenuItem,_transpondMenuItem]];
+        [self.menuController setMenuItems:@[self.menuItemDelete, self.menuItemForward]];
     }
     else {
-        [self.menuController setMenuItems:@[_deleteMenuItem]];
+        [self.menuController setMenuItems:@[self.menuItemDelete]];
     }
     
     [self.menuController setTargetRect:showInView.frame inView:showInView.superview];

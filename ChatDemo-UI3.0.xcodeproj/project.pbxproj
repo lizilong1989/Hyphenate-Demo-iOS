@@ -1167,7 +1167,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.hyphenate.demo.im;
+				PRODUCT_BUNDLE_IDENTIFIER = io.hyphenate.demo.dating;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = NO;
@@ -1214,7 +1214,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.hyphenate.demo.im;
+				PRODUCT_BUNDLE_IDENTIFIER = io.hyphenate.demo.dating;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = NO;
