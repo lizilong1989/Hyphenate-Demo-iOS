@@ -121,7 +121,7 @@
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 break;
             case 2:
-                cell.textLabel.text = NSLocalizedString(@"title.buddyBlock", @"Black List");
+                cell.textLabel.text = NSLocalizedString(@"title.usernameBlock", @"Black List");
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 break;
             case 3:

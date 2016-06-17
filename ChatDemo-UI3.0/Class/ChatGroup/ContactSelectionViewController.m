@@ -89,9 +89,9 @@
             NSMutableArray *tmpArray = [_dataSource objectAtIndex:section];
             if (tmpArray && [tmpArray count] > 0) {
                 for (int i = 0; i < [tmpArray count]; i++) {
-                    NSString *buddy = [tmpArray objectAtIndex:i];
-                    if ([buddy isEqualToString:username]) {
-                        [self.selectedContacts addObject:buddy];
+                    NSString *username = [tmpArray objectAtIndex:i];
+                    if ([username isEqualToString:username]) {
+                        [self.selectedContacts addObject:username];
                         [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:section] animated:NO scrollPosition:UITableViewScrollPositionNone];
                         
                         break;
@@ -394,8 +394,8 @@
     [_dataSource removeAllObjects];
     [_contactsSource removeAllObjects];
     
-    NSArray *buddyList = [[EMClient sharedClient].contactManager getContactsFromDB];
-    for (NSString *username in buddyList) {
+    NSArray *usernameList = [[EMClient sharedClient].contactManager getContactsFromDB];
+    for (NSString *username in usernameList) {
         [self.contactsSource addObject:username];
     }
     

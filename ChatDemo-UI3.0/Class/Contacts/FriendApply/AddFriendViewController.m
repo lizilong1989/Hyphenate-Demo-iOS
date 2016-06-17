@@ -164,7 +164,7 @@
 
 - (void)sendUserFriendRequest:(NSString *)friendName
 {
-    if ([self didBuddyExist:friendName]) {
+    if ([self isUsernameExist:friendName]) {
         
         NSString *message = [NSString stringWithFormat:NSLocalizedString(@"friend.repeat", @"'%@' is already your friend"), friendName];
         
@@ -175,7 +175,7 @@
                       otherButtonTitles:nil];
         
     }
-    else if ([self hasSendBuddyRequest:friendName])
+    else if ([self hasSendUserRequest:friendName])
     {
         NSString *message = [NSString stringWithFormat:NSLocalizedString(@"friend.repeatApply", @"Send the friend request to '%@' again"), friendName];
         [EMAlertView showAlertWithTitle:message
@@ -275,22 +275,22 @@
     }
 }
 
-- (BOOL)hasSendBuddyRequest:(NSString *)buddyName
+- (BOOL)hasSendUserRequest:(NSString *)username
 {
     NSArray *userlist = [[EMClient sharedClient].contactManager getContactsFromDB];
     for (NSString *username in userlist) {
-        if ([username isEqualToString:buddyName]) {
+        if ([username isEqualToString:username]) {
             return YES;
         }
     }
     return NO;
 }
 
-- (BOOL)didBuddyExist:(NSString *)buddyName
+- (BOOL)isUsernameExist:(NSString *)username
 {
     NSArray *userlist = [[EMClient sharedClient].contactManager getContactsFromDB];
     for (NSString *username in userlist) {
-        if ([username isEqualToString:buddyName]){
+        if ([username isEqualToString:username]){
             return YES;
         }
     }

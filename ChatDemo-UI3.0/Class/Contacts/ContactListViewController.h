@@ -12,7 +12,7 @@
 
 #import "GroupListViewController.h"
 
-@interface ContactListViewController : EaseUsersListViewController
+@interface ContactListViewController : EaseUsersListViewController <EMChatManagerDelegate>
 
 @property (strong, nonatomic) GroupListViewController *groupController;
 

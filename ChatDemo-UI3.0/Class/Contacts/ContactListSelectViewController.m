@@ -53,13 +53,13 @@
 
     if (self.messageModel) {
         if (self.messageModel.bodyType == EMMessageBodyTypeText) {
-            EMMessage *message = [EaseSDKHelper sendTextMessage:self.messageModel.text to:userModel.buddy messageType:EMChatTypeChat messageExt:self.messageModel.message.ext];
+            EMMessage *message = [EaseSDKHelper sendTextMessage:self.messageModel.text to:userModel.username messageType:EMChatTypeChat messageExt:self.messageModel.message.ext];
             __weak typeof(self) weakself = self;
             [[EMClient sharedClient].chatManager asyncSendMessage:message progress:nil completion:^(EMMessage *aMessage, EMError *aError) {
                 if (!aError) {
                     NSMutableArray *array = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
-                    ChatViewController *chatController = [[ChatViewController alloc] initWithConversationID:userModel.buddy conversationType:EMConversationTypeChat];
-                    chatController.title = userModel.nickname.length != 0 ? [userModel.nickname copy] : [userModel.buddy copy];
+                    ChatViewController *chatController = [[ChatViewController alloc] initWithConversationID:userModel.username conversationType:EMConversationTypeChat];
+                    chatController.title = userModel.nickname.length != 0 ? [userModel.nickname copy] : [userModel.username copy];
                     if ([array count] >= 3) {
                         [array removeLastObject];
                         [array removeLastObject];
@@ -78,13 +78,13 @@
             if (image) {
                 image = [UIImage imageWithContentsOfFile:self.messageModel.fileLocalPath];
             }
-            EMMessage *message= [EaseSDKHelper sendImageMessageWithImage:image to:userModel.buddy messageType:EMChatTypeChat messageExt:self.messageModel.message.ext];
+            EMMessage *message= [EaseSDKHelper sendImageMessageWithImage:image to:userModel.username messageType:EMChatTypeChat messageExt:self.messageModel.message.ext];
             
             [[EMClient sharedClient].chatManager asyncSendMessage:message progress:nil completion:^(EMMessage *message, EMError *error) {
                 if (!error) {
                     NSMutableArray *array = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
-                    ChatViewController *chatController = [[ChatViewController alloc] initWithConversationID:userModel.buddy conversationType:EMConversationTypeChat];
-                    chatController.title = userModel.nickname.length != 0 ? userModel.nickname : userModel.buddy;
+                    ChatViewController *chatController = [[ChatViewController alloc] initWithConversationID:userModel.username conversationType:EMConversationTypeChat];
+                    chatController.title = userModel.nickname.length != 0 ? userModel.nickname : userModel.username;
                     if ([array count] >= 3) {
                         [array removeLastObject];
                         [array removeLastObject];
@@ -102,11 +102,11 @@
 #pragma mark - EMUserListViewControllerDataSource
 
 - (id<IUserModel>)userListViewController:(EaseUsersListViewController *)userListViewController
-                           modelForBuddy:(NSString *)buddy
+                           modelForusername:(NSString *)username
 {
     id<IUserModel> model = nil;
-    model = [[EaseUserModel alloc] initWithBuddy:buddy];
-    UserProfileEntity *profileEntity = [[UserProfileManager sharedInstance] getUserProfileByUsername:model.buddy];
+    model = [[EaseUserModel alloc] initWithUsername:username];
+    UserProfileEntity *profileEntity = [[UserProfileManager sharedInstance] getUserProfileByUsername:model.username];
     if (profileEntity) {
         model.nickname= profileEntity.nickname == nil ? profileEntity.username : profileEntity.nickname;
         model.avatarURLPath = profileEntity.imageUrl;
@@ -119,7 +119,7 @@
 {
     id<IUserModel> model = nil;
     model = [self.dataArray objectAtIndex:indexPath.row];
-    UserProfileEntity *profileEntity = [[UserProfileManager sharedInstance] getUserProfileByUsername:model.buddy];
+    UserProfileEntity *profileEntity = [[UserProfileManager sharedInstance] getUserProfileByUsername:model.username];
     if (profileEntity) {
         model.nickname= profileEntity.nickname == nil ? profileEntity.username : profileEntity.nickname;
         model.avatarURLPath = profileEntity.imageUrl;

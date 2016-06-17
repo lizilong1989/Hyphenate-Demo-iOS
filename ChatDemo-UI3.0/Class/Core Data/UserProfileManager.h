@@ -35,7 +35,7 @@
 - (void)loadUserProfileInBackground:(NSArray*)usernames
                        saveToLoacal:(BOOL)save
                          completion:(void (^)(BOOL success, NSError *error))completion;
-- (void)loadUserProfileInBackgroundWithBuddy:(NSArray*)buddyList
+- (void)loadUserProfileInBackgroundOfUser:(NSArray*)usernameList
                                 saveToLoacal:(BOOL)save
                                   completion:(void (^)(BOOL success, NSError *error))completion;
 - (UserProfileEntity*)getUserProfileByUsername:(NSString*)username;

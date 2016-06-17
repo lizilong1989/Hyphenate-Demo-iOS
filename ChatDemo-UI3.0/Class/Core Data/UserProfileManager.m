@@ -231,17 +231,17 @@ static UserProfileManager *sharedInstance = nil;
     }
 }
 
-- (void)loadUserProfileInBackgroundWithBuddy:(NSArray*)buddyList
+- (void)loadUserProfileInBackgroundOfUser:(NSArray*)usernameList
                                 saveToLoacal:(BOOL)save
                                   completion:(void (^)(BOOL success, NSError *error))completion
 {
     NSMutableArray *usernames = [NSMutableArray array];
-    for (NSString *buddy in buddyList)
+    for (NSString *username in usernameList)
     {
-        if ([buddy length])
+        if ([username length])
         {
-            if (![self getUserProfileByUsername:buddy]) {
-                [usernames addObject:buddy];
+            if (![self getUserProfileByUsername:username]) {
+                [usernames addObject:username];
             }
         }
     }

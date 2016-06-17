@@ -288,7 +288,7 @@
 "title.publicGroup" = "Public group";
 "title.groupSetting" = "Group Setting";
 "title.apnsSetting" = "Push Notification";
-"title.buddyBlock" = "Black List";
+"title.usernameBlock" = "Black List";
 "title.apply" = "Requests and Notifications";
 "title.groupApply" = "Group Notification";
 "title.groupSubjectChanging" = "Change Group Name";
