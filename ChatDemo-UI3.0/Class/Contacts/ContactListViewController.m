@@ -201,7 +201,7 @@
         return 1;
     }
     else {
-        return [[self.dataArray objectAtIndex:(section - 1)] count];
+        return [[self.dataArray objectAtIndex:section] count];
     }
 }
 
