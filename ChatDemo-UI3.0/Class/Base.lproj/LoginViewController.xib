@@ -124,7 +124,7 @@
                             </constraints>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                             <state key="normal" title="Register">
-                                <color key="titleColor" red="0.63921568627450975" green="0.86274509803921573" blue="0.19215686274509805" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="titleColor" red="0.78431372549019607" green="0.0" blue="0.0078431372549019607" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
                             <state key="highlighted">
@@ -158,14 +158,14 @@
                 </view>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g7n-mh-wjo">
                     <rect key="frame" x="0.0" y="226" width="320" height="44"/>
-                    <color key="backgroundColor" red="0.62745098039215685" green="0.84705882352941175" blue="0.18823529411764706" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="backgroundColor" red="0.7861884898" green="0.0" blue="0.0073601044520000001" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="44" id="VgU-W1-7GN"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="boldSystem" size="button"/>
                     <state key="normal" title="Login">
                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="titleShadowColor" red="0.8784313725490196" green="0.035294117647058823" blue="0.070588235294117646" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
                     <state key="highlighted">
                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

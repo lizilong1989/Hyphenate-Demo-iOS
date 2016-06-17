@@ -26,7 +26,7 @@
         NSString *appkey = [ud stringForKey:@"identifier_appkey"];
         if (!appkey)
         {
-            appkey = @"hyphenatedemo#hyphenatedemo";
+            appkey = @"hyphenatedemo#hyphenatedemo2";
             [ud setObject:appkey forKey:@"identifier_appkey"];
         }
         NSString *imServer = [ud stringForKey:@"identifier_imserver"];

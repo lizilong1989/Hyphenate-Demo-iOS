@@ -71,7 +71,7 @@ static int const kGaDispatchPeriod = 30;
                    otherConfig:@{kSDKConfigEnableConsoleLogger:[NSNumber numberWithBool:YES]}];
     
     // Google Analytics
-    [self initializeGoogleAnalytics];
+//    [self initializeGoogleAnalytics];
 
     // Crashlytics
     [Fabric with:@[[Crashlytics class]]];

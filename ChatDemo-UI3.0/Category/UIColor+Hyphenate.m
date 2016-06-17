@@ -12,7 +12,17 @@
 
 + (UIColor *)HIPrimaryColor
 {
-    return [[self class] colorFromHexString:@"#A0D830"];
+    return [[self class] colorFromHexString:@"#C80002"];
+}
+
++ (UIColor *)HIPrimaryLightColor
+{
+    return [[self class] colorFromHexString:@"#E00912"];
+}
+
++ (UIColor *)HIPrimaryDarkColor
+{
+    return [[self class] colorFromHexString:@"#AF0000"];
 }
 
 + (UIColor *)HIGreenDarkColor

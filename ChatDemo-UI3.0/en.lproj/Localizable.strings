@@ -62,7 +62,7 @@
 "hasRead" = "Read";
 
 //app
-"AppName" = "Hyphenate Demo";
+"AppName" = "Hi";
 
 //error description
 "error.connectServerFail" = "Connect to the server failed!";

@@ -11,6 +11,9 @@
 @interface UIColor (Hyphenate)
 
 + (UIColor *)HIPrimaryColor;
++ (UIColor *)HIPrimaryLightColor;
++ (UIColor *)HIPrimaryDarkColor;
+
 + (UIColor *)HIGreenDarkColor;
 + (UIColor *)HIGreenLightColor;
 + (UIColor *)HIRedColor;

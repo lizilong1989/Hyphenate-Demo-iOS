@@ -173,7 +173,7 @@
 //- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 //{
 //    UIView *contentView = [[UIView alloc] init];
-//    [contentView setBackgroundColor:[UIColor HIGreenDarkColor]];
+//    [contentView setBackgroundColor:[UIColor HIPrimaryColor]];
 //    
 //    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 100, 22)];
 //    label.backgroundColor = [UIColor whiteColor];

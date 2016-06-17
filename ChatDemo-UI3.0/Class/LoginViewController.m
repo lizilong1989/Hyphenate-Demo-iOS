@@ -40,7 +40,7 @@
     
     [self setupForDismissKeyboard];
     
-    self.title = NSLocalizedString(@"AppName", @"Hyphenate Demo");
+    self.title = NSLocalizedString(@"AppName", @"");
 }
 
 - (void)viewDidAppear:(BOOL)animated
