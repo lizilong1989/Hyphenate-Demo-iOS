@@ -201,6 +201,9 @@
     else if (self.requestCount > 0 && section == 0) {
         return 1;
     }
+    else if (self.requestCount > 0 && [self.dataArray count] > 0) {
+        return [[self.dataArray objectAtIndex:section - 1] count];
+    }
     else {
         return [[self.dataArray objectAtIndex:section] count];
     }
