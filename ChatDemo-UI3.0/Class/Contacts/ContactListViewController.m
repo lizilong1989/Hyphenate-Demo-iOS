@@ -74,6 +74,7 @@
     [[EMClient sharedClient].chatManager addDelegate:self delegateQueue:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUnreadMessageCount:) name:kNotification_unreadMessageCountUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadRequestCount) name:kNotification_didReceiveRequest object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated

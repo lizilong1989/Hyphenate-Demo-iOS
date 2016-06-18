@@ -26,6 +26,10 @@
 
     #import "UIColor+Hyphenate.h"
 
+
+    #define kNotification_didReceiveRequest @"kNotification_didReceiveRequest"
+
+
 #define DEMO_CALL 1
 
 #endif

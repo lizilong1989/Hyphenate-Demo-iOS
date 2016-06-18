@@ -17,8 +17,6 @@
 
 - (void)jumpToChatList;
 
-- (void)setupUntreatedApplyCount;
-
 - (void)updateUnreadMessageCount:(NSNotification *)notification;
 
 - (void)networkChanged:(EMConnectionState)connectionState;

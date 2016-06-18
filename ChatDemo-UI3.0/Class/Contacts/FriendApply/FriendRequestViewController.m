@@ -327,7 +327,7 @@ static FriendRequestViewController *controller = nil;
 
 - (void)backAction
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"setupUntreatedApplyCount" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateRequestCount" object:nil];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

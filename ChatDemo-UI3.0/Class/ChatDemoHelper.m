@@ -307,22 +307,18 @@ static ChatDemoHelper *helper = nil;
         aReason = [NSString stringWithFormat:NSLocalizedString(@"group.joinRequestWithName", @"%@ requested to join the group\'%@\'：%@"), aApplicant, aGroup.subject, aReason];
     }
     
-    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:@{@"title":aGroup.subject, @"groupId":aGroup.groupId, @"username":aApplicant, @"groupname":aGroup.subject, @"applyMessage":aReason, @"requestType":[NSNumber numberWithInteger:HIRequestTypeJoinGroup]}];
+    NSMutableDictionary *requestDict = [NSMutableDictionary dictionaryWithDictionary:@{@"title":aGroup.subject, @"groupId":aGroup.groupId, @"username":aApplicant, @"groupname":aGroup.subject, @"applyMessage":aReason, @"requestType":[NSNumber numberWithInteger:HIRequestTypeJoinGroup]}];
     
-    [[FriendRequestViewController shareController] addNewRequest:dic];
+    [[FriendRequestViewController shareController] addNewRequest:requestDict];
    
     if (self.mainVC) {
-        
-        [self.mainVC setupUntreatedApplyCount];
         
 #if !TARGET_IPHONE_SIMULATOR
         [self.mainVC playSoundAndVibration];
 #endif
     }
     
-    if (self.contactViewVC) {
-        [self.contactViewVC reloadRequestCount];
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_didReceiveRequest object:requestDict];
 }
 
 - (void)didJoinedGroup:(EMGroup *)aGroup
@@ -363,22 +359,18 @@ static ChatDemoHelper *helper = nil;
         return;
     }
     
-    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:@{@"title":@"", @"groupId":aGroupId, @"username":aInviter, @"groupname":@"", @"applyMessage":aMessage, @"requestType":[NSNumber numberWithInteger:HIRequestTypeReceivedGroupInvitation]}];
+    NSMutableDictionary *requestDict = [NSMutableDictionary dictionaryWithDictionary:@{@"title":@"", @"groupId":aGroupId, @"username":aInviter, @"groupname":@"", @"applyMessage":aMessage, @"requestType":[NSNumber numberWithInteger:HIRequestTypeReceivedGroupInvitation]}];
     
-    [[FriendRequestViewController shareController] addNewRequest:dic];
+    [[FriendRequestViewController shareController] addNewRequest:requestDict];
     
     if (self.mainVC) {
-        
-        [self.mainVC setupUntreatedApplyCount];
         
 #if !TARGET_IPHONE_SIMULATOR
         [self.mainVC playSoundAndVibration];
 #endif
     }
     
-    if (self.contactViewVC) {
-        [self.contactViewVC reloadRequestCount];
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_didReceiveRequest object:requestDict];
 }
 
 #pragma mark - EMContactManagerDelegate
@@ -443,14 +435,12 @@ static ChatDemoHelper *helper = nil;
         aMessage = [NSString stringWithFormat:NSLocalizedString(@"friend.somebodyAddWithName", @"%@ added you as a friend"), aUsername];
     }
     
-    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:@{@"title":aUsername, @"username":aUsername, @"applyMessage":aMessage, @"requestType":[NSNumber numberWithInteger:HIRequestTypeFriend]}];
+    NSMutableDictionary *requestDict = [NSMutableDictionary dictionaryWithDictionary:@{@"title":aUsername, @"username":aUsername, @"applyMessage":aMessage, @"requestType":[NSNumber numberWithInteger:HIRequestTypeFriend]}];
   
-    [[FriendRequestViewController shareController] addNewRequest:dic];
+    [[FriendRequestViewController shareController] addNewRequest:requestDict];
    
     if (self.mainVC) {
-        
-        [self.mainVC setupUntreatedApplyCount];
-        
+                
 #if !TARGET_IPHONE_SIMULATOR
         [self.mainVC playSoundAndVibration];
         
@@ -465,7 +455,7 @@ static ChatDemoHelper *helper = nil;
 #endif
     }
     
-    [_contactViewVC reloadRequestCount];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_didReceiveRequest object:requestDict];
 }
 
 #pragma mark - EMChatroomManagerDelegate

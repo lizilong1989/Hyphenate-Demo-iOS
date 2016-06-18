@@ -55,7 +55,8 @@ static NSString *kGroupName = @"GroupName";
 //    self.title = NSLocalizedString(@"title.conversation", @"Chats");
     self.title = @"Secret Lovers";
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setupUntreatedApplyCount) name:@"setupUntreatedApplyCount" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestCount) name:kNotification_didReceiveRequest object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestCount) name:@"updateRequestCount" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUnreadMessageCount:) name:kNotification_unreadMessageCountUpdated object:nil];
     
     [self setupTabBars];
@@ -70,7 +71,7 @@ static NSString *kGroupName = @"GroupName";
     self.navigationItem.rightBarButtonItem = self.addFriendItem;
 
     [self updateUnreadMessageCount:nil];
-    [self setupUntreatedApplyCount];
+    [self updateRequestCount];
     
     [ChatDemoHelper shareHelper].contactViewVC = self.contactsVC;
     [ChatDemoHelper shareHelper].conversationListVC = self.chatListVC;
@@ -79,6 +80,8 @@ static NSString *kGroupName = @"GroupName";
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    [self updateUnreadMessageCount:nil];
     
     [[GAI sharedInstance].defaultTracker set:kGAIScreenName value:NSStringFromClass(self.class)];
     [[GAI sharedInstance].defaultTracker send:[[GAIDictionaryBuilder createScreenView] build]];
@@ -94,8 +97,8 @@ static NSString *kGroupName = @"GroupName";
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
-//    self.navigationItem.rightBarButtonItem = nil;
-//
+    self.navigationItem.rightBarButtonItem = nil;
+
 //    if (item.tag == 0) {
 //        self.title = NSLocalizedString(@"title.conversation", @"Chats");
 //    }
@@ -108,14 +111,14 @@ static NSString *kGroupName = @"GroupName";
 //        [self.settingsVC refreshConfig];
 //    }
     
-//    if (item.tag == 0) {
-//        self.title = NSLocalizedString(@"title.addressbook", @"Contacts");
-//        self.navigationItem.rightBarButtonItem = self.addFriendItem;
-//    }
-//    else if (item.tag == 1) {
-//        self.title = NSLocalizedString(@"title.setting", @"Settings");
-//        [self.settingsVC refreshConfig];
-//    }
+    if (item.tag == 1) {
+        self.title = @"Secret Lovers";
+        self.navigationItem.rightBarButtonItem = self.addFriendItem;
+    }
+    else if (item.tag == 2) {
+        self.title = NSLocalizedString(@"title.setting", @"Settings");
+        [self.settingsVC refreshConfig];
+    }
 }
 
 
@@ -152,7 +155,6 @@ static NSString *kGroupName = @"GroupName";
     [self selectedTapTabBarItems:self.settingsVC.tabBarItem];
     
 //    self.viewControllers = @[self.chatListVC, self.contactsVC, self.settingsVC];
-
     self.viewControllers = @[self.contactsVC, self.settingsVC];
 }
 
@@ -174,10 +176,13 @@ static NSString *kGroupName = @"GroupName";
     for (EMConversation *conversation in conversations) {
         unreadCount += conversation.unreadMessagesCount;
     }
+    
     if (self.chatListVC) {
+        
         if (unreadCount > 0) {
-            self.chatListVC.tabBarItem.badgeValue = [NSString stringWithFormat:@"%i",(int)unreadCount];
-        }else{
+            self.chatListVC.tabBarItem.badgeValue = [NSString stringWithFormat:@"%i", (int)unreadCount];
+        }
+        else {
             self.chatListVC.tabBarItem.badgeValue = nil;
         }
     }
@@ -186,7 +191,7 @@ static NSString *kGroupName = @"GroupName";
     [application setApplicationIconBadgeNumber:unreadCount];
 }
 
-- (void)setupUntreatedApplyCount
+- (void)updateRequestCount
 {
     NSInteger unreadCount = [[[FriendRequestViewController shareController] dataSource] count];
    
@@ -202,6 +207,7 @@ static NSString *kGroupName = @"GroupName";
 - (void)networkChanged:(EMConnectionState)connectionState
 {
     _connectionState = connectionState;
+    
     [self.chatListVC networkChanged:connectionState];
 }
 
@@ -257,9 +263,13 @@ static NSString *kGroupName = @"GroupName";
         }
         
         NSString *title = [[UserProfileManager sharedInstance] getNickNameWithUsername:message.from];
+        
         if (message.chatType == EMChatTypeGroupChat) {
+            
             NSArray *groupArray = [[EMClient sharedClient].groupManager getAllGroups];
+            
             for (EMGroup *group in groupArray) {
+                
                 if ([group.groupId isEqualToString:message.conversationId]) {
                     title = [NSString stringWithFormat:@"%@(%@)", message.from, group.subject];
                     break;
@@ -269,26 +279,30 @@ static NSString *kGroupName = @"GroupName";
         else if (message.chatType == EMChatTypeChatRoom)
         {
             NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+            
             NSString *key = [NSString stringWithFormat:@"OnceJoinedChatrooms_%@", [[EMClient sharedClient] currentUsername]];
+            
             NSMutableDictionary *chatrooms = [NSMutableDictionary dictionaryWithDictionary:[ud objectForKey:key]];
+            
             NSString *chatroomName = [chatrooms objectForKey:message.conversationId];
-            if (chatroomName)
-            {
+            if (chatroomName) {
                 title = [NSString stringWithFormat:@"%@(%@)", message.from, chatroomName];
             }
         }
         
         notification.alertBody = [NSString stringWithFormat:@"%@:%@", title, messageStr];
     }
-    else{
+    else {
         notification.alertBody = NSLocalizedString(@"receiveMessage", @"you have a new message");
     }
     
     notification.alertAction = NSLocalizedString(@"open", @"Open");
     notification.timeZone = [NSTimeZone defaultTimeZone];
+    
     NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:self.lastPlaySoundDate];
     if (timeInterval < kDefaultPlaySoundInterval) {
-    } else {
+    }
+    else {
         notification.soundName = UILocalNotificationDefaultSoundName;
         self.lastPlaySoundDate = [NSDate date];
     }
@@ -310,17 +324,22 @@ static NSString *kGroupName = @"GroupName";
 
 #pragma mark - Auto Reconnect
 
-- (void)willAutoReconnect{
+- (void)willAutoReconnect
+{
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    
     NSNumber *showreconnect = [ud objectForKey:@"identifier_showreconnect_enable"];
+    
     if (showreconnect && [showreconnect boolValue]) {
         [self hideHud];
         [self showHint:NSLocalizedString(@"reconnection.ongoing", @"reconnecting...")];
     }
 }
 
-- (void)didAutoReconnectFinishedWithError:(NSError *)error{
+- (void)didAutoReconnectFinishedWithError:(NSError *)error
+{
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    
     NSNumber *showreconnect = [ud objectForKey:@"identifier_showreconnect_enable"];
     if (showreconnect && [showreconnect boolValue]) {
         [self hideHud];
