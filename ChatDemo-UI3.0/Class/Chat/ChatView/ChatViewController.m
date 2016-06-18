@@ -181,14 +181,13 @@
     
     model = [[EaseMessageModel alloc] initWithMessage:message];
     model.avatarImage = [UIImage imageNamed:@"user"];
-    
+    model.failImageName = @"imageDownloadFail";
+
     UserProfileEntity *profileEntity = [[UserProfileManager sharedInstance] getUserProfileByUsername:model.nickname];
     if (profileEntity) {
         model.avatarURLPath = profileEntity.imageUrl;
         model.nickname = profileEntity.nickname;
     }
-    
-    model.failImageName = @"imageDownloadFail";
     
     return model;
 }
