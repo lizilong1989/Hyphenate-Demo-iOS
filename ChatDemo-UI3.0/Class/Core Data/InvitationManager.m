@@ -12,13 +12,14 @@
 
 #import "InvitationManager.h"
 
-@interface InvitationManager (){
-    NSUserDefaults *_defaults;
-}
+@interface InvitationManager ()
+
+@property (nonatomic, strong) NSUserDefaults *defaults;
 
 @end
 
 static InvitationManager *sharedInstance = nil;
+
 @implementation InvitationManager
 
 
@@ -32,7 +33,7 @@ static InvitationManager *sharedInstance = nil;
 
 -(instancetype)init{
     if (self = [super init]) {
-        _defaults = [NSUserDefaults standardUserDefaults];
+        self.defaults = [NSUserDefaults standardUserDefaults];
     }
     
     return self;
@@ -43,20 +44,23 @@ static InvitationManager *sharedInstance = nil;
 
 - (void)addInvitation:(RequestEntity *)requestEntity loginUser:(NSString *)username
 {
-    NSData *defalutData = [_defaults objectForKey:username];
-    
-    NSMutableArray *requests = [[NSKeyedUnarchiver unarchiveObjectWithData:defalutData] mutableCopy];
-    
-    [requests addObject:requestEntity];
-    
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:requests];
-    
-    [_defaults setObject:data forKey:username];
+    NSData *defalutData = [self.defaults objectForKey:username];
+    if (defalutData) {
+        
+        NSMutableArray *requests = [[NSKeyedUnarchiver unarchiveObjectWithData:defalutData] mutableCopy];
+        if (requests) {
+            [requests addObject:requestEntity];
+            
+            NSData *data = [NSKeyedArchiver archivedDataWithRootObject:requests];
+            
+            [self.defaults setObject:data forKey:username];
+        }
+    }
 }
 
 - (void)removeInvitation:(RequestEntity *)requestEntity loginUser:(NSString *)username
 {
-    NSData *defalutData = [_defaults objectForKey:username];
+    NSData *defalutData = [self.defaults objectForKey:username];
     
     if (!defalutData) {
         return;
@@ -76,12 +80,12 @@ static InvitationManager *sharedInstance = nil;
     
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:requests];
     
-    [_defaults setObject:data forKey:username];
+    [self.defaults setObject:data forKey:username];
 }
 
 - (NSArray *)getSavedFriendRequests:(NSString *)username
 {
-    NSData *defalutData = [_defaults objectForKey:username];
+    NSData *defalutData = [self.defaults objectForKey:username];
     
     NSArray *requestObjects = [[NSArray alloc] init];
     
