@@ -73,7 +73,8 @@ static int const kGaDispatchPeriod = 30;
     // Google Analytics
 //    [self initializeGoogleAnalytics];
 
-    // Crashlytics
+    // Fabric
+    [[Fabric sharedSDK] setDebug:YES];
     [Fabric with:@[[Crashlytics class]]];
     
     return YES;
