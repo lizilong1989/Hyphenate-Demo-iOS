@@ -95,7 +95,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 8;
+    return 4 + 1;   // items + spacing
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -111,35 +111,10 @@
         
         switch(indexPath.row) {
             case 0:
-                cell.textLabel.text = NSLocalizedString(@"setting.autoLogin", @"Automatic Login");
-                cell.accessoryType = UITableViewCellAccessoryNone;
-                self.autoLoginSwitch.frame = CGRectMake(self.tableView.frame.size.width - (self.autoLoginSwitch.frame.size.width + 10), (cell.contentView.frame.size.height - self.autoLoginSwitch.frame.size.height) / 2, self.autoLoginSwitch.frame.size.width, self.autoLoginSwitch.frame.size.height);
-                [cell.contentView addSubview:self.autoLoginSwitch];
-                break;
-            case 1:
-                cell.textLabel.text = NSLocalizedString(@"title.apnsSetting", @"Apns Settings");
-                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                break;
-            case 2:
-                cell.textLabel.text = NSLocalizedString(@"title.usernameBlock", @"Black List");
-                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                break;
-            case 3:
                 cell.accessoryType = UITableViewCellAccessoryNone;
                 cell.textLabel.text = [NSString stringWithFormat:@"SDK Version: %@", [[EMClient sharedClient] version]];
                 break;
-            case 4:
-                cell.textLabel.text = NSLocalizedString(@"setting.deleteConWhenLeave", @"Delete conversation when leave a group");
-                cell.accessoryType = UITableViewCellAccessoryNone;
-                self.delConversationSwitch.frame = CGRectMake(self.tableView.frame.size.width - (self.delConversationSwitch.frame.size.width + 10), (cell.contentView.frame.size.height - self.delConversationSwitch.frame.size.height) / 2, self.delConversationSwitch.frame.size.width, self.delConversationSwitch.frame.size.height);
-                [self.delConversationSwitch setOn:NO animated:NO];
-                [cell.contentView addSubview:self.delConversationSwitch];
-                break;
-            case 5:
-                cell.textLabel.text = NSLocalizedString(@"setting.iospushname", @"APNs Display Name");
-                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                break;
-            case 6:
+            case 1:
                 cell.textLabel.text = NSLocalizedString(@"setting.personalInfo", nil);
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 while (cell.contentView.subviews.count) {
@@ -147,6 +122,31 @@
                     [child removeFromSuperview];
                 }
                 break;
+            case 2:
+                cell.textLabel.text = NSLocalizedString(@"title.apnsSetting", @"Apns Settings");
+                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                break;
+            case 3:
+                cell.textLabel.text = NSLocalizedString(@"setting.iospushname", @"APNs Display Name");
+                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                break;
+//            case 4:
+//                cell.textLabel.text = NSLocalizedString(@"title.usernameBlock", @"Black List");
+//                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//                break;
+//            case 5:
+//                cell.textLabel.text = NSLocalizedString(@"setting.deleteConWhenLeave", @"Delete conversation when leave a group");
+//                cell.accessoryType = UITableViewCellAccessoryNone;
+//                self.delConversationSwitch.frame = CGRectMake(self.tableView.frame.size.width - (self.delConversationSwitch.frame.size.width + 10), (cell.contentView.frame.size.height - self.delConversationSwitch.frame.size.height) / 2, self.delConversationSwitch.frame.size.width, self.delConversationSwitch.frame.size.height);
+//                [self.delConversationSwitch setOn:NO animated:NO];
+//                [cell.contentView addSubview:self.delConversationSwitch];
+//                break;
+//            case 6:
+//                cell.textLabel.text = NSLocalizedString(@"setting.autoLogin", @"Automatic Login");
+//                cell.accessoryType = UITableViewCellAccessoryNone;
+//                self.autoLoginSwitch.frame = CGRectMake(self.tableView.frame.size.width - (self.autoLoginSwitch.frame.size.width + 10), (cell.contentView.frame.size.height - self.autoLoginSwitch.frame.size.height) / 2, self.autoLoginSwitch.frame.size.width, self.autoLoginSwitch.frame.size.height);
+//                [cell.contentView addSubview:self.autoLoginSwitch];
+//                break;
             default:
                 break;
         }
@@ -167,22 +167,21 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     if (indexPath.row == 1) {
-        PushNotificationViewController *pushController = [[PushNotificationViewController alloc] initWithStyle:UITableViewStylePlain];
-        [self.navigationController pushViewController:pushController animated:YES];
-    }
-    else if (indexPath.row == 2)
-    {
-        BlackListViewController *blackController = [[BlackListViewController alloc] initWithNibName:nil bundle:nil];
-        [self.navigationController pushViewController:blackController animated:YES];
-    }
-    else if (indexPath.row == 5) {
-        EditNicknameViewController *editName = [[EditNicknameViewController alloc] initWithNibName:nil bundle:nil];
-        [self.navigationController pushViewController:editName animated:YES];
-    }
-    else if (indexPath.row == 6){
         UserProfileEditViewController *userProfile = [[UserProfileEditViewController alloc] initWithStyle:UITableViewStylePlain];
         [self.navigationController pushViewController:userProfile animated:YES];
     }
+    else if (indexPath.row == 2) {
+        PushNotificationViewController *pushController = [[PushNotificationViewController alloc] initWithStyle:UITableViewStylePlain];
+        [self.navigationController pushViewController:pushController animated:YES];
+    }
+    else if (indexPath.row == 3) {
+        EditNicknameViewController *editName = [[EditNicknameViewController alloc] initWithNibName:nil bundle:nil];
+        [self.navigationController pushViewController:editName animated:YES];
+    }
+//    else if (indexPath.row == 4) {
+//        BlackListViewController *blackController = [[BlackListViewController alloc] initWithNibName:nil bundle:nil];
+//        [self.navigationController pushViewController:blackController animated:YES];
+//    }
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
