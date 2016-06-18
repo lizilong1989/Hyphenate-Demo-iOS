@@ -119,20 +119,20 @@ static FriendRequestViewController *controller = nil;
     
     if(self.dataSource.count > indexPath.row)
     {
-        ApplyEntity *entity = [self.dataSource objectAtIndex:indexPath.row];
+        RequestEntity *entity = [self.dataSource objectAtIndex:indexPath.row];
         if (entity) {
             cell.indexPath = indexPath;
-            ApplyStyle applyStyle = [entity.style intValue];
-            if (applyStyle == ApplyStyleGroupInvitation) {
+            HIRequestType requestType = [entity.style intValue];
+            if (requestType == HIRequestTypeReceivedGroupInvitation) {
                 cell.titleLabel.text = NSLocalizedString(@"title.groupApply", @"Group Notification");
                 cell.headerImageView.image = [UIImage imageNamed:@"group"];
             }
-            else if (applyStyle == ApplyStyleJoinGroup)
+            else if (requestType == HIRequestTypeJoinGroup)
             {
                 cell.titleLabel.text = NSLocalizedString(@"title.groupApply", @"Group Notification");
                 cell.headerImageView.image = [UIImage imageNamed:@"group"];
             }
-            else if(applyStyle == ApplyStyleFriend){
+            else if(requestType == HIRequestTypeFriend){
                 cell.titleLabel.text = entity.applicantUsername;
                 cell.headerImageView.image = [UIImage imageNamed:@"chatListCellHead"];
             }
@@ -154,7 +154,7 @@ static FriendRequestViewController *controller = nil;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ApplyEntity *entity = [self.dataSource objectAtIndex:indexPath.row];
+    RequestEntity *entity = [self.dataSource objectAtIndex:indexPath.row];
     return [ApplyFriendCell heightWithContent:entity.reason];
 }
 
@@ -170,8 +170,8 @@ static FriendRequestViewController *controller = nil;
     if (indexPath.row < [self.dataSource count]) {
         [self showHudInView:self.view hint:NSLocalizedString(@"sendingApply", @"sending apply...")];
         
-        ApplyEntity *entity = [self.dataSource objectAtIndex:indexPath.row];
-        ApplyStyle applyStyle = [entity.style intValue];
+        RequestEntity *entity = [self.dataSource objectAtIndex:indexPath.row];
+        HIRequestType requestType = [entity.style intValue];
         __weak typeof(self) weakSelf = self;
         dispatch_block_t successBlock = ^{
             [weakSelf hideHud];
@@ -186,14 +186,14 @@ static FriendRequestViewController *controller = nil;
             [weakSelf showHint:NSLocalizedString(@"acceptFail", @"accept failure")];
         };
         
-        if (applyStyle == ApplyStyleGroupInvitation) {
+        if (requestType == HIRequestTypeReceivedGroupInvitation) {
             [[EMClient sharedClient].groupManager asyncAcceptInvitationFromGroup:entity.groupId inviter:entity.applicantUsername success:^(EMGroup *aGroup) {
                 successBlock();
             } failure:^(EMError *aError) {
                 errorBlock();
             }];
         }
-        else if (applyStyle == ApplyStyleJoinGroup)
+        else if (requestType == HIRequestTypeJoinGroup)
         {
             [[EMClient sharedClient].groupManager asyncAcceptJoinApplication:entity.groupId applicant:entity.applicantUsername success:^{
                 successBlock();
@@ -201,7 +201,7 @@ static FriendRequestViewController *controller = nil;
                 errorBlock();
             }];
         }
-        else if(applyStyle == ApplyStyleFriend){
+        else if(requestType == HIRequestTypeFriend){
             [[EMClient sharedClient].contactManager asyncAcceptInvitationForUsername:entity.applicantUsername success:^{
                 successBlock();
             } failure:^(EMError *aError) {
@@ -215,8 +215,8 @@ static FriendRequestViewController *controller = nil;
 {
     if (indexPath.row < [self.dataSource count]) {
         [self showHudInView:self.view hint:NSLocalizedString(@"sendingApply", @"sending apply...")];
-        ApplyEntity *entity = [self.dataSource objectAtIndex:indexPath.row];
-        ApplyStyle applyStyle = [entity.style intValue];
+        RequestEntity *entity = [self.dataSource objectAtIndex:indexPath.row];
+        HIRequestType requestType = [entity.style intValue];
         
         __weak typeof(self) weakSelf = self;
         dispatch_block_t successBlock = ^{
@@ -232,14 +232,14 @@ static FriendRequestViewController *controller = nil;
             [weakSelf showHint:NSLocalizedString(@"rejectFail", @"reject failure")];
         };
         
-        if (applyStyle == ApplyStyleGroupInvitation) {
+        if (requestType == HIRequestTypeReceivedGroupInvitation) {
             [[EMClient sharedClient].groupManager asyncDeclineInvitationFromGroup:entity.groupId inviter:entity.applicantUsername reason:nil success:^{
                 successBlock();
             } failure:^(EMError *aError) {
                 errorBlock();
             }];
         }
-        else if (applyStyle == ApplyStyleJoinGroup)
+        else if (requestType == HIRequestTypeJoinGroup)
         {
             [[EMClient sharedClient].groupManager asyncDeclineJoinApplication:entity.groupId applicant:entity.applicantUsername reason:nil success:^{
                 successBlock();
@@ -247,7 +247,7 @@ static FriendRequestViewController *controller = nil;
                 errorBlock();
             }];
         }
-        else if(applyStyle == ApplyStyleFriend){
+        else if(requestType == HIRequestTypeFriend){
             [[EMClient sharedClient].contactManager asyncDeclineInvitationForUsername:entity.applicantUsername success:^{
                 successBlock();
             } failure:^(EMError *aError) {
@@ -263,14 +263,14 @@ static FriendRequestViewController *controller = nil;
 {
     if (dictionary && [dictionary count] > 0) {
         NSString *applyUsername = [dictionary objectForKey:@"username"];
-        ApplyStyle style = [[dictionary objectForKey:@"applyStyle"] intValue];
+        HIRequestType style = [[dictionary objectForKey:@"requestType"] intValue];
         
         if (applyUsername && applyUsername.length > 0) {
             for (int i = ((int)[_dataSource count] - 1); i >= 0; i--) {
-                ApplyEntity *oldEntity = [_dataSource objectAtIndex:i];
-                ApplyStyle oldStyle = [oldEntity.style intValue];
+                RequestEntity *oldEntity = [_dataSource objectAtIndex:i];
+                HIRequestType oldStyle = [oldEntity.style intValue];
                 if (oldStyle == style && [applyUsername isEqualToString:oldEntity.applicantUsername]) {
-                    if(style != ApplyStyleFriend)
+                    if(style != HIRequestTypeFriend)
                     {
                         NSString *newGroupid = [dictionary objectForKey:@"groupname"];
                         if (newGroupid || [newGroupid length] > 0 || [newGroupid isEqualToString:oldEntity.groupId]) {
@@ -288,9 +288,9 @@ static FriendRequestViewController *controller = nil;
             }
             
             //new apply
-            ApplyEntity * newEntity= [[ApplyEntity alloc] init];
+            RequestEntity * newEntity= [[RequestEntity alloc] init];
             newEntity.applicantUsername = [dictionary objectForKey:@"username"];
-            newEntity.style = [dictionary objectForKey:@"applyStyle"];
+            newEntity.style = [dictionary objectForKey:@"requestType"];
             newEntity.reason = [dictionary objectForKey:@"applyMessage"];
             
             NSString *loginName = [[EMClient sharedClient] currentUsername];

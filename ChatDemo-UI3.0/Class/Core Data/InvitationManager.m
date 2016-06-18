@@ -41,20 +41,20 @@ static InvitationManager *sharedInstance = nil;
 
 #pragma mark - Data
 
-- (void)addInvitation:(ApplyEntity *)applyEntity loginUser:(NSString *)username
+- (void)addInvitation:(RequestEntity *)requestEntity loginUser:(NSString *)username
 {
     NSData *defalutData = [_defaults objectForKey:username];
     
     NSMutableArray *requests = [[NSKeyedUnarchiver unarchiveObjectWithData:defalutData] mutableCopy];
     
-    [requests addObject:applyEntity];
+    [requests addObject:requestEntity];
     
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:requests];
     
     [_defaults setObject:data forKey:username];
 }
 
-- (void)removeInvitation:(ApplyEntity *)applyEntity loginUser:(NSString *)username
+- (void)removeInvitation:(RequestEntity *)requestEntity loginUser:(NSString *)username
 {
     NSData *defalutData = [_defaults objectForKey:username];
     
@@ -64,10 +64,10 @@ static InvitationManager *sharedInstance = nil;
     
     NSMutableArray *requests = [[NSKeyedUnarchiver unarchiveObjectWithData:defalutData] mutableCopy];
     
-    ApplyEntity *needDelete;
-    for (ApplyEntity *request in requests) {
-        if ([request.groupId isEqualToString:applyEntity.groupId] &&
-            [request.receiverUsername isEqualToString:applyEntity.receiverUsername]) {
+    RequestEntity *needDelete;
+    for (RequestEntity *request in requests) {
+        if ([request.groupId isEqualToString:requestEntity.groupId] &&
+            [request.receiverUsername isEqualToString:requestEntity.receiverUsername]) {
             needDelete = request;
             break;
         }
@@ -95,11 +95,11 @@ static InvitationManager *sharedInstance = nil;
 @end
 
 
-@interface ApplyEntity ()<NSCoding>
+@interface RequestEntity ()<NSCoding>
 
 @end
 
-@implementation ApplyEntity
+@implementation RequestEntity
 
 -(void)encodeWithCoder:(NSCoder *)aCoder{
     [aCoder encodeObject:_applicantUsername forKey:@"applicantUsername"];

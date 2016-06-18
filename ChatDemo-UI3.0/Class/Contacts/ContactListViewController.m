@@ -280,7 +280,7 @@
         cell.aboutMeLabel.text = @"woof, woof. where's the squirrel?";
     }
     else {
-        cell.aboutMeLabel.text = @"Hi, I'm an awesome developer work in tech";
+        cell.aboutMeLabel.text = @"Hi, I'm a lonely developer developing a dating app so I can date myself.";
         cell.locationLabel.text = @"San Francisco, CA";
     }
 }
@@ -677,13 +677,14 @@
             
         } failure:^(EMError *aError) {
             
-            [self showHint:NSLocalizedString(@"loadDataFailed", @"")];
+            [self showHint:[NSString stringWithFormat:@"Failed to get blacklist from server - %u", aError.code]];
             [self reloadDataSource];
             [self tableViewDidFinishTriggerHeader:YES reload:NO];
         }];
         
     } failure:^(EMError *aError) {
-        [self showHint:NSLocalizedString(@"loadDataFailed", @"")];
+        
+        [self showHint:[NSString stringWithFormat:@"Failed to get contacts from server - %u", aError.code]];
         [self reloadDataSource];
         [self tableViewDidFinishTriggerHeader:YES reload:NO];
     }];

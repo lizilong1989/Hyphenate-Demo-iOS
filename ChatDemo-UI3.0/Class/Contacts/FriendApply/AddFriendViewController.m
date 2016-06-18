@@ -183,32 +183,28 @@
                         completionBlock:nil
                       cancelButtonTitle:NSLocalizedString(@"ok", @"OK")
                       otherButtonTitles:nil];
-        
     }
-    else {
-        
+    else
+    {
         NSString *message = [NSString stringWithFormat:NSLocalizedString(@"friend.somebodyInvite", @"%@ sent you a friend request"), [[EMClient sharedClient] currentUsername]];
         
-        if (friendName && friendName.length > 0) {
+        [self showHudInView:self.view hint:NSLocalizedString(@"friend.sendFriendRequest", @"sending friend request...")];
+        
+        // Currently the method doesn't provide feedback if user exist or not on the server
+        [[EMClient sharedClient].contactManager asyncAddContact:friendName message:message success:^{
             
-            [self showHudInView:self.view hint:NSLocalizedString(@"friend.sendFriendRequest", @"sending friend request...")];
+            [self hideHud];
+
+            [self showHint:NSLocalizedString(@"friend.sendFriendRequestSuccess", @"Friend request sent")];
             
-            // Currently the method doesn't provide feedback if user exist or not on the server
-            [[EMClient sharedClient].contactManager asyncAddContact:friendName message:message success:^{
-                
-                [self hideHud];
+            [self.navigationController popViewControllerAnimated:YES];
+            
+        } failure:^(EMError *aError) {
+            
+            [self hideHud];
 
-                [self showHint:NSLocalizedString(@"friend.sendFriendRequestSuccess", @"Friend request sent")];
-                
-                [self.navigationController popViewControllerAnimated:YES];
-                
-            } failure:^(EMError *aError) {
-                
-                [self hideHud];
-
-                [self showHint:NSLocalizedString(@"friend.sendFriendRequestFail", @"send friend request fails, please try again")];
-            }];
-        }
+            [self showHint:NSLocalizedString(@"friend.sendFriendRequestFail", @"send friend request fails, please try again")];
+        }];
     }
 }
 
@@ -234,7 +230,11 @@
         
         if ([[self.addFriendTextField.text lowercaseString] isEqualToString:loginUsername]) {
             
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"prompt", @"Prompt") message:NSLocalizedString(@"friend.notAddSelf", @"can't add yourself as a friend") delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil, nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"prompt", @"Prompt")
+                                                                message:NSLocalizedString(@"friend.notAddSelf", @"can't add yourself as a friend")
+                                                               delegate:nil
+                                                      cancelButtonTitle:NSLocalizedString(@"ok", @"OK")
+                                                      otherButtonTitles:nil, nil];
             
             [alertView show];
             
@@ -242,30 +242,12 @@
         }
         
         // Check friend request list
-        NSArray *applyArray = [[FriendRequestViewController shareController] dataSource];
-        
-        if (applyArray && [applyArray count] > 0) {
-            
-            for (ApplyEntity *entity in applyArray) {
-                
-                ApplyStyle style = [entity.style intValue];
-                
-                BOOL isGroup = style == ApplyStyleFriend ? NO : YES;
-                
-                if (!isGroup && [entity.applicantUsername isEqualToString:friendName]) {
-                    
-                    NSString *message = [NSString stringWithFormat:NSLocalizedString(@"friend.repeatInvite", @"%@ sent an invitation to you"), friendName];
-                    
-                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"prompt", @"Prompt") message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil, nil];
-                    
-                    [alertView show];
-                    
-                    return;
-                }
-            }
+        if ([self hasUserSentFriendRequest:friendName]) {
+            return;
         }
-        
-        [self sendUserFriendRequest:friendName];
+        else {
+            [self sendUserFriendRequest:friendName];
+        }
         
 //        [self.dataSource removeAllObjects];
 //        
@@ -275,11 +257,43 @@
     }
 }
 
+- (BOOL)hasUserSentFriendRequest:(NSString *)username
+{
+    NSArray *requests = [[FriendRequestViewController shareController] dataSource];
+    
+    if (requests && [requests count] > 0) {
+        
+        for (RequestEntity *entity in requests) {
+            
+            HIRequestType type = [entity.style intValue];
+            
+            BOOL isGroup = type == HIRequestTypeFriend ? NO : YES;
+            
+            if (!isGroup && [entity.applicantUsername isEqualToString:username]) {
+                
+                NSString *message = [NSString stringWithFormat:NSLocalizedString(@"friend.repeatInvite", @"%@ sent an invitation to you"), username];
+                
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"prompt", @"Prompt")
+                                                                    message:message
+                                                                   delegate:nil
+                                                          cancelButtonTitle:NSLocalizedString(@"ok", @"OK")
+                                                          otherButtonTitles:nil, nil];
+                
+                [alertView show];
+                
+                return YES;
+            }
+        }
+    }
+    
+    return NO;
+}
+
 - (BOOL)hasSendUserRequest:(NSString *)username
 {
     NSArray *userlist = [[EMClient sharedClient].contactManager getContactsFromDB];
-    for (NSString *username in userlist) {
-        if ([username isEqualToString:username]) {
+    for (NSString *userObject in userlist) {
+        if ([username isEqualToString:userObject]) {
             return YES;
         }
     }
@@ -289,8 +303,8 @@
 - (BOOL)isUsernameExist:(NSString *)username
 {
     NSArray *userlist = [[EMClient sharedClient].contactManager getContactsFromDB];
-    for (NSString *username in userlist) {
-        if ([username isEqualToString:username]){
+    for (NSString *userObject in userlist) {
+        if ([username isEqualToString:userObject]){
             return YES;
         }
     }

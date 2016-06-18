@@ -12,20 +12,21 @@
 
 #import <Foundation/Foundation.h>
 
-@class ApplyEntity;
+@class RequestEntity;
+
 @interface InvitationManager : NSObject
 
 + (instancetype)sharedInstance;
 
--(void)addInvitation:(ApplyEntity *)applyEntity loginUser:(NSString *)username;
+- (void)addInvitation:(RequestEntity *)requestEntity loginUser:(NSString *)username;
 
--(void)removeInvitation:(ApplyEntity *)applyEntity loginUser:(NSString *)username;
+- (void)removeInvitation:(RequestEntity *)requestEntity loginUser:(NSString *)username;
 
--(NSArray *)getSavedFriendRequests:(NSString *)username;
+- (NSArray *)getSavedFriendRequests:(NSString *)username;
 
 @end
 
-@interface ApplyEntity : NSObject 
+@interface RequestEntity : NSObject 
 
 @property (nonatomic, strong) NSString * applicantUsername;
 @property (nonatomic, strong) NSString * applicantNick;

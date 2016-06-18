@@ -89,7 +89,7 @@ typedef NS_ENUM(NSInteger, GettingMoreFooterViewState){
         case eGettingMoreFooterViewStateFailed:
             _activity.hidden = YES;
             _label.hidden = NO;
-            _label.text = NSLocalizedString(@"loadDataFailed", @"Load more failed");
+            _label.text = NSLocalizedString(@"loadDataFailed", @"");
             break;
         default:
             break;

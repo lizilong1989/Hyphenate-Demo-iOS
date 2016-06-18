@@ -11,10 +11,10 @@
 #import <UIKit/UIKit.h>
 
 typedef enum{
-    ApplyStyleFriend            = 0,
-    ApplyStyleGroupInvitation,
-    ApplyStyleJoinGroup,
-}ApplyStyle;
+    HIRequestTypeFriend            = 0,
+    HIRequestTypeReceivedGroupInvitation,
+    HIRequestTypeJoinGroup,
+} HIRequestType;
 
 @interface FriendRequestViewController : UITableViewController
 {

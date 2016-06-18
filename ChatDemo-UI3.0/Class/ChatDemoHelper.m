@@ -307,7 +307,7 @@ static ChatDemoHelper *helper = nil;
         aReason = [NSString stringWithFormat:NSLocalizedString(@"group.joinRequestWithName", @"%@ requested to join the group\'%@\'：%@"), aApplicant, aGroup.subject, aReason];
     }
     
-    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:@{@"title":aGroup.subject, @"groupId":aGroup.groupId, @"username":aApplicant, @"groupname":aGroup.subject, @"applyMessage":aReason, @"applyStyle":[NSNumber numberWithInteger:ApplyStyleJoinGroup]}];
+    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:@{@"title":aGroup.subject, @"groupId":aGroup.groupId, @"username":aApplicant, @"groupname":aGroup.subject, @"applyMessage":aReason, @"requestType":[NSNumber numberWithInteger:HIRequestTypeJoinGroup]}];
     
     [[FriendRequestViewController shareController] addNewRequest:dic];
    
@@ -363,7 +363,7 @@ static ChatDemoHelper *helper = nil;
         return;
     }
     
-    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:@{@"title":@"", @"groupId":aGroupId, @"username":aInviter, @"groupname":@"", @"applyMessage":aMessage, @"applyStyle":[NSNumber numberWithInteger:ApplyStyleGroupInvitation]}];
+    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:@{@"title":@"", @"groupId":aGroupId, @"username":aInviter, @"groupname":@"", @"applyMessage":aMessage, @"requestType":[NSNumber numberWithInteger:HIRequestTypeReceivedGroupInvitation]}];
     
     [[FriendRequestViewController shareController] addNewRequest:dic];
     
@@ -443,7 +443,7 @@ static ChatDemoHelper *helper = nil;
         aMessage = [NSString stringWithFormat:NSLocalizedString(@"friend.somebodyAddWithName", @"%@ added you as a friend"), aUsername];
     }
     
-    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:@{@"title":aUsername, @"username":aUsername, @"applyMessage":aMessage, @"applyStyle":[NSNumber numberWithInteger:ApplyStyleFriend]}];
+    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:@{@"title":aUsername, @"username":aUsername, @"applyMessage":aMessage, @"requestType":[NSNumber numberWithInteger:HIRequestTypeFriend]}];
   
     [[FriendRequestViewController shareController] addNewRequest:dic];
    
