@@ -69,6 +69,9 @@
     [self searchController];
     
     [self removeEmptyConversationsFromDB];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshDataSource) name:kNotification_conversationUpdated object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh) name:kNotification_didReceiveMessages object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -360,12 +363,12 @@
 
 #pragma mark - public
 
--(void)refresh
+- (void)refresh
 {
     [self refreshAndSortView];
 }
 
--(void)refreshDataSource
+- (void)refreshDataSource
 {
     [self tableViewDidTriggerHeaderRefresh];
 }

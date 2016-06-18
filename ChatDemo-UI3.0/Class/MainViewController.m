@@ -58,7 +58,10 @@ static NSString *kGroupName = @"GroupName";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestCount) name:kNotification_didReceiveRequest object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestCount) name:@"updateRequestCount" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUnreadMessageCount:) name:kNotification_unreadMessageCountUpdated object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCmdMessages:) name:kNotification_didReceiveCmdMessages object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendNotification:) name:kNotification_didReceiveMessages object:nil];
+
+
     [self setupTabBars];
     
 //    self.selectedIndex = 0;
@@ -70,7 +73,6 @@ static NSString *kGroupName = @"GroupName";
                                                                             action:@selector(addFriendAction)];
     self.navigationItem.rightBarButtonItem = self.addFriendItem;
 
-    [self updateUnreadMessageCount:nil];
     [self updateRequestCount];
     
     [ChatDemoHelper shareHelper].contactViewVC = self.contactsVC;
@@ -211,7 +213,31 @@ static NSString *kGroupName = @"GroupName";
     [self.chatListVC networkChanged:connectionState];
 }
 
-- (void)playSoundAndVibration{
+
+#pragma mark - Notifications
+
+- (void)sendNotification:(NSNotification *)notification
+{
+#if !TARGET_IPHONE_SIMULATOR
+    UIApplicationState state = [[UIApplication sharedApplication] applicationState];
+    switch (state) {
+        case UIApplicationStateActive:
+            [self playSoundAndVibration];
+            break;
+        case UIApplicationStateInactive:
+            [self playSoundAndVibration];
+            break;
+        case UIApplicationStateBackground:
+            [self showNotificationWithMessage:notification.object];
+            break;
+        default:
+            break;
+    }
+#endif
+}
+
+- (void)playSoundAndVibration
+{
     NSTimeInterval timeInterval = [[NSDate date]
                                    timeIntervalSinceDate:self.lastPlaySoundDate];
     if (timeInterval < kDefaultPlaySoundInterval) {
@@ -321,6 +347,15 @@ static NSString *kGroupName = @"GroupName";
     
     [self.navigationController pushViewController:addController animated:YES];
 }
+
+
+#pragma mark - Notifications
+
+- (void)handleCmdMessages:(NSNotification *)notification
+{
+    [self showHint:NSLocalizedString(@"receiveCmd", @"receive cmd message")];
+}
+
 
 #pragma mark - Auto Reconnect
 

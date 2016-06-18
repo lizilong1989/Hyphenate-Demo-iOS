@@ -89,19 +89,20 @@ static ChatDemoHelper *helper = nil;
 
 - (void)asyncGroupFromServer
 {
-    __weak typeof(self) weakself = self;
     [[EMClient sharedClient].groupManager loadAllMyGroupsFromDB];
+    
     [[EMClient sharedClient].groupManager asyncGetMyGroupsFromServer:^(NSArray *aList) {
-        if (weakself.contactViewVC) {
-            [weakself.contactViewVC reloadGroupView];
+        
+        if (self.contactViewVC) {
+            [self.contactViewVC reloadGroupView];
         }
+        
     } failure:^(EMError *aError) {
     }];
 }
 
 - (void)asyncConversationFromDB
 {
-    __weak typeof(self) weakself = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
         NSArray *conversationsFromDB = [[EMClient sharedClient].chatManager loadAllConversationsFromDB];
@@ -118,17 +119,10 @@ static ChatDemoHelper *helper = nil;
             
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_conversationUpdated object:conversations];
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_unreadMessageCountUpdated object:conversations];
-        
-            if (weakself.conversationListVC) {
-                [weakself.conversationListVC refreshDataSource];
-            }
-            
-            if (weakself.mainVC) {
-                [weakself.mainVC updateUnreadMessageCount:nil];
-            }
         });
     });
 }
+
 
 #pragma mark - EMClientDelegate
 
@@ -140,18 +134,26 @@ static ChatDemoHelper *helper = nil;
 - (void)didAutoLoginWithError:(EMError *)error
 {
     if (error) {
+        
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"login.errorAutoLogin", @"") delegate:self cancelButtonTitle:NSLocalizedString(@"ok", @"ok") otherButtonTitles:nil, nil];
         alertView.tag = 100;
+        
         [alertView show];
-    } else if([[EMClient sharedClient] isConnected]){
+    }
+    else if([[EMClient sharedClient] isConnected]){
+        
         UIView *view = self.mainVC.view;
+        
         [MBProgressHUD showHUDAddedTo:view animated:YES];
+        
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            
             BOOL flag = [[EMClient sharedClient] dataMigrationTo3];
             if (flag) {
                 [self asyncGroupFromServer];
                 [self asyncConversationFromDB];
             }
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 [MBProgressHUD hideAllHUDsForView:view animated:YES];
             });
@@ -162,37 +164,37 @@ static ChatDemoHelper *helper = nil;
 - (void)didLoginFromOtherDevice
 {
     [self _clearHelper];
+    
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"prompt", @"Prompt") message:NSLocalizedString(@"loggedIntoAnotherDevice", @"your login account has been in other places") delegate:self cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil, nil];
+    
     [alertView show];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@NO];
 }
 
 - (void)didRemovedFromServer
 {
     [self _clearHelper];
+    
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"prompt", @"Prompt") message:NSLocalizedString(@"loginUserRemoveFromServer", @"your account has been removed from the server side") delegate:self cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil, nil];
+    
     [alertView show];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@NO];
 }
+
 
 #pragma mark - EMChatManagerDelegate
 
 - (void)didUpdateConversationList:(NSArray *)aConversationList
 {
-    if (self.mainVC) {
-        [self.mainVC updateUnreadMessageCount:nil];
-    }
-    
-    if (self.conversationListVC) {
-        [_conversationListVC refreshDataSource];
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_unreadMessageCountUpdated object:aConversationList];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_conversationUpdated object:aConversationList];
 }
 
 - (void)didReceiveCmdMessages:(NSArray *)aCmdMessages
 {
-    if (self.mainVC) {
-        [self.mainVC showHint:NSLocalizedString(@"receiveCmd", @"receive cmd message")];
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_didReceiveCmdMessages object:aCmdMessages];
 }
 
 - (void)didReceiveMessages:(NSArray *)aMessages
@@ -202,56 +204,36 @@ static ChatDemoHelper *helper = nil;
     for(EMMessage *message in aMessages){
         
         BOOL needShowNotification = (message.chatType != EMChatTypeChat) ? [self _needShowNotification:message.conversationId] : YES;
+        
         if (needShowNotification) {
-#if !TARGET_IPHONE_SIMULATOR
-            UIApplicationState state = [[UIApplication sharedApplication] applicationState];
-            switch (state) {
-                case UIApplicationStateActive:
-                    [self.mainVC playSoundAndVibration];
-                    break;
-                case UIApplicationStateInactive:
-                    [self.mainVC playSoundAndVibration];
-                    break;
-                case UIApplicationStateBackground:
-                    [self.mainVC showNotificationWithMessage:message];
-                    break;
-                default:
-                    break;
-            }
-#endif
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_didReceiveMessages object:message];
         }
         
-        if (_chatVC == nil) {
-            _chatVC = [self _getCurrentChatView];
+        if (!self.chatVC) {
+            self.chatVC = [self _getCurrentChatView];
         }
-        BOOL isChatting = NO;
-        if (_chatVC) {
-            isChatting = [message.conversationId isEqualToString:_chatVC.conversation.conversationId];
+        
+        BOOL isSameConversation = NO;
+        if (self.chatVC) {
+            isSameConversation = [message.conversationId isEqualToString:self.chatVC.conversation.conversationId];
         }
-        if (_chatVC == nil || !isChatting) {
-            if (self.conversationListVC) {
-                [_conversationListVC refresh];
-            }
-            
-            if (self.mainVC) {
-                [self.mainVC updateUnreadMessageCount:nil];
-            }
+        if (!self.chatVC || !isSameConversation) {
+
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_didReceiveMessages object:message];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_unreadMessageCountUpdated object:nil];
+
             return;
         }
         
-        if (isChatting) {
+        if (isSameConversation) {
             isRefreshCons = NO;
         }
     }
     
     if (isRefreshCons) {
-        if (self.conversationListVC) {
-            [_conversationListVC refresh];
-        }
         
-        if (self.mainVC) {
-            [self.mainVC updateUnreadMessageCount:nil];
-        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_didReceiveMessages object:[aMessages objectAtIndex:0]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_unreadMessageCountUpdated object:nil];
     }
 }
 

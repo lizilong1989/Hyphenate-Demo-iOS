@@ -17,8 +17,6 @@
 
 - (void)jumpToChatList;
 
-- (void)updateUnreadMessageCount:(NSNotification *)notification;
-
 - (void)networkChanged:(EMConnectionState)connectionState;
 
 - (void)didReceiveLocalNotification:(UILocalNotification *)notification;
