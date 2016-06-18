@@ -280,6 +280,10 @@
         cell.locationLabel.text = @"San Francisco, CA";
         cell.aboutMeLabel.text = @"woof, woof. where's the squirrel?";
     }
+    else if ([username isEqualToString:@"han"]) {
+        cell.locationLabel.text = @"Corellia, Galaxy";
+        cell.aboutMeLabel.text = @"Look, I ain't in this for your revolution, and I'm not in it for you, princess. I expect to be well paid. I'm in it for the money.";
+    }
     else {
         cell.aboutMeLabel.text = @"Hi, I'm a lonely developer developing a dating app so I can date myself.";
         cell.locationLabel.text = @"San Francisco, CA";
