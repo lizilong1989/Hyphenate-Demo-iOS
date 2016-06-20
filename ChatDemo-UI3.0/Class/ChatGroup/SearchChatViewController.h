@@ -14,8 +14,8 @@
 
 @interface SearchChatViewController : ChatViewController
 
-- (instancetype)initWithConversationID:(NSString *)conversationChatter
-                           conversationType:(EMConversationType)conversationType
-                              fromMessageId:(NSString*)messageId;
+- (instancetype)initWithConversationID:(NSString *)conversationID
+                      conversationType:(EMConversationType)conversationType
+                         fromMessageId:(NSString*)messageId;
 
 @end

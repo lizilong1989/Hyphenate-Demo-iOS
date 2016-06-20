@@ -40,6 +40,9 @@ static int const kGaDispatchPeriod = 30;
 
 @interface AppDelegate ()
 
+/** Hyphenate **/
+@property (assign, nonatomic) EMConnectionState connectionState;
+
 /** Google Analytics **/
 - (void)initializeGoogleAnalytics;
 
@@ -91,31 +94,34 @@ static int const kGaDispatchPeriod = 30;
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
-    if (_mainController) {
-        [_mainController jumpToChatList];
+    if (self.mainController) {
+        [self.mainController jumpToChatList];
     }
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
-    if (_mainController) {
-        [_mainController didReceiveLocalNotification:notification];
+    if (self.mainController) {
+        [self.mainController didReceiveLocalNotification:notification];
     }
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
+    /** Hyphenate **/
     [[EMClient sharedClient] applicationDidEnterBackground:application];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+    /** Hyphenate **/
     [[EMClient sharedClient] applicationWillEnterForeground:application];
 }
 
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    [GAI sharedInstance].optOut =
-    ![[NSUserDefaults standardUserDefaults] boolForKey:kTrackingPreferenceKey];
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+    /** Google analytics **/
+    [GAI sharedInstance].optOut = ![[NSUserDefaults standardUserDefaults] boolForKey:kTrackingPreferenceKey];
 }
 
 

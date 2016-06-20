@@ -16,12 +16,9 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
-/** Hyphenate **/
-@property (assign, nonatomic) EMConnectionState connectionState;
+@property (strong, nonatomic) MainViewController *mainController;
 
 /** Google Analytics **/
 @property (strong, nonatomic) id<GAITracker> tracker;
-
-@property (strong, nonatomic) MainViewController *mainController;
 
 @end

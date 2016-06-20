@@ -26,11 +26,11 @@
 
 @implementation SearchChatViewController
 
-- (instancetype)initWithConversationID:(NSString *)conversationChatter
-                           conversationType:(EMConversationType)conversationType
-                              fromMessageId:(NSString*)messageId
+- (instancetype)initWithConversationID:(NSString *)conversationID
+                      conversationType:(EMConversationType)conversationType
+                         fromMessageId:(NSString*)messageId
 {
-    self = [super initWithConversationID:conversationChatter conversationType:conversationType];
+    self = [super initWithConversationID:conversationID conversationType:conversationType];
     if (self) {
         self.upMessageId = messageId;
         self.downMessageId = messageId;

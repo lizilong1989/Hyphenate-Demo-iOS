@@ -21,7 +21,7 @@
 
 static const CGFloat kDefaultPlaySoundInterval = 3.0;
 static NSString *kMessageType = @"MessageType";
-static NSString *kConversationChatter = @"ConversationChatter";
+static NSString *kConversationID = @"ConversationID";
 static NSString *kGroupName = @"GroupName";
 
 @interface MainViewController () <UIAlertViewDelegate, EMCallManagerDelegate>
@@ -335,7 +335,7 @@ static NSString *kGroupName = @"GroupName";
     
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
     [userInfo setObject:[NSNumber numberWithInt:message.chatType] forKey:kMessageType];
-    [userInfo setObject:message.conversationId forKey:kConversationChatter];
+    [userInfo setObject:message.conversationId forKey:kConversationID];
     notification.userInfo = userInfo;
     
     [[UIApplication sharedApplication] scheduleLocalNotification:notification];
@@ -425,13 +425,9 @@ static NSString *kGroupName = @"GroupName";
     NSDictionary *userInfo = notification.userInfo;
     if (userInfo)
     {
-        if ([self.navigationController.topViewController isKindOfClass:[ChatViewController class]]) {
-//            ChatViewController *chatController = (ChatViewController *)self.navigationController.topViewController;
-//            [chatController hideImagePicker];
-        }
-        
         NSArray *viewControllers = self.navigationController.viewControllers;
         [viewControllers enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+            
             if (obj != self)
             {
                 if (![obj isKindOfClass:[ChatViewController class]])
@@ -440,19 +436,23 @@ static NSString *kGroupName = @"GroupName";
                 }
                 else
                 {
-                    NSString *conversationChatter = userInfo[kConversationChatter];
+                    NSString *conversationID = userInfo[kConversationID];
                     ChatViewController *chatViewController = (ChatViewController *)obj;
-                    if (![chatViewController.conversation.conversationId isEqualToString:conversationChatter])
+                    if (![chatViewController.conversation.conversationId isEqualToString:conversationID])
                     {
                         [self.navigationController popViewControllerAnimated:NO];
+                        
                         EMChatType messageType = [userInfo[kMessageType] intValue];
-                        chatViewController = [[ChatViewController alloc] initWithConversationID:conversationChatter conversationType:[self conversationTypeFromMessageType:messageType]];
+                        
+                        chatViewController = [[ChatViewController alloc] initWithConversationID:conversationID conversationType:[self conversationTypeFromMessageType:messageType]];
+                        
                         switch (messageType) {
+                                
                             case EMChatTypeChat:
                                 {
                                     NSArray *groupArray = [[EMClient sharedClient].groupManager getAllGroups];
                                     for (EMGroup *group in groupArray) {
-                                        if ([group.groupId isEqualToString:conversationChatter]) {
+                                        if ([group.groupId isEqualToString:conversationID]) {
                                             chatViewController.title = group.subject;
                                             break;
                                         }
@@ -460,7 +460,7 @@ static NSString *kGroupName = @"GroupName";
                                 }
                                 break;
                             default:
-                                chatViewController.title = conversationChatter;
+                                chatViewController.title = conversationID;
                                 break;
                         }
                         [self.navigationController pushViewController:chatViewController animated:NO];
@@ -471,15 +471,18 @@ static NSString *kGroupName = @"GroupName";
             else
             {
                 ChatViewController *chatViewController = (ChatViewController *)obj;
-                NSString *conversationChatter = userInfo[kConversationChatter];
+                
+                NSString *conversationID = userInfo[kConversationID];
+                
                 EMChatType messageType = [userInfo[kMessageType] intValue];
-                chatViewController = [[ChatViewController alloc] initWithConversationID:conversationChatter conversationType:[self conversationTypeFromMessageType:messageType]];
+                
+                chatViewController = [[ChatViewController alloc] initWithConversationID:conversationID conversationType:[self conversationTypeFromMessageType:messageType]];
                 switch (messageType) {
                     case EMChatTypeGroupChat:
                     {
                         NSArray *groupArray = [[EMClient sharedClient].groupManager getAllGroups];
                         for (EMGroup *group in groupArray) {
-                            if ([group.groupId isEqualToString:conversationChatter]) {
+                            if ([group.groupId isEqualToString:conversationID]) {
                                 chatViewController.title = group.subject;
                                 break;
                             }
@@ -487,7 +490,7 @@ static NSString *kGroupName = @"GroupName";
                     }
                         break;
                     default:
-                        chatViewController.title = conversationChatter;
+                        chatViewController.title = conversationID;
                         break;
                 }
                 [self.navigationController pushViewController:chatViewController animated:NO];
