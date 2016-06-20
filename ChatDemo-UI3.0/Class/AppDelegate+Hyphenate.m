@@ -24,9 +24,9 @@
 
 - (void)hyphenateApplication:(UIApplication *)application
 didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-                    appkey:(NSString *)appkey
-              apnsCertName:(NSString *)apnsCertName
-               otherConfig:(NSDictionary *)otherConfig
+                      appkey:(NSString *)appkey
+                apnsCertName:(NSString *)apnsCertName
+                 otherConfig:(NSDictionary *)otherConfig
 {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(loginStateChange:)
@@ -50,28 +50,6 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
     }
 }
 
-#pragma mark - Remove Notification Delegate
-
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
-{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [[EMClient sharedClient] asyncBindDeviceToken:deviceToken success:^{
-            
-        } failure:^(EMError *aError) {
-            
-        }];
-    });
-}
-
-- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
-{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"apns.failToRegisterApns", Fail to register apns)
-                                                    message:error.description
-                                                   delegate:nil
-                                          cancelButtonTitle:NSLocalizedString(@"ok", @"OK")
-                                          otherButtonTitles:nil];
-    [alert show];
-}
 
 #pragma mark - login changed
 
@@ -121,6 +99,25 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
     
     self.window.rootViewController = navigationController;
 }
+
+#pragma mark - Notification Delegate
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [[EMClient sharedClient] asyncBindDeviceToken:deviceToken success:^{
+            NSLog(@"bind device token for remote notification succeed");
+        } failure:^(EMError *aError) {
+            NSLog(@"Error!!! Failed to bindDeviceToken - %u", aError.code);
+        }];
+    });
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+    NSLog(@"Error!!! Failed to register remote notification - %@", error.description);
+}
+
 
 #pragma mark - Push Notification Delegate
 

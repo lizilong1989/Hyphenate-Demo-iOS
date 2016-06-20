@@ -46,10 +46,9 @@
 
 + (instancetype)shareHelper;
 
+// Get Data
 - (void)asyncPushOptions;
-
 - (void)asyncGroupFromServer;
-
 - (void)asyncConversationFromDB;
 
 #if DEMO_CALL == 1

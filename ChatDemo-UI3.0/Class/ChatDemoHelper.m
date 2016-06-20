@@ -80,6 +80,9 @@ static ChatDemoHelper *helper = nil;
 #endif
 }
 
+
+#pragma mark - Data
+
 - (void)asyncPushOptions
 {
     [[EMClient sharedClient] asyncGetPushOptionsFromServer:^(EMPushOptions *aOptions) {
