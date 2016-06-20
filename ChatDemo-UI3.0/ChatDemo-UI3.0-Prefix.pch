@@ -26,7 +26,6 @@
 
     #import "UIColor+Hyphenate.h"
 
-
 #define DEMO_CALL 1
 
 #endif

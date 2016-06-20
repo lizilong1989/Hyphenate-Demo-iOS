@@ -134,39 +134,33 @@
 {
     [self showHudInView:self.view hint:NSLocalizedString(@"login.inProgress", @"")];
     
-    __weak typeof(self) weakself = self;
-    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
       
         [[EMClient sharedClient] asyncLoginWithUsername:username password:password success:^{
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                [weakself hideHud];
+                [self hideHud];
                 
                 [[EMClient sharedClient].options setIsAutoLogin:YES];
                 
-                [MBProgressHUD showHUDAddedTo:weakself.view animated:YES];
+                [MBProgressHUD showHUDAddedTo:self.view animated:YES];
                 
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    [[EMClient sharedClient] dataMigrationTo3];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        
-                        [[ChatDemoHelper shareHelper] asyncGroupFromServer];
-                        [[ChatDemoHelper shareHelper] asyncConversationFromDB];
-                        [[ChatDemoHelper shareHelper] asyncPushOptions];
-                        
-                        [MBProgressHUD hideAllHUDsForView:weakself.view animated:YES];
-                        
-                        [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@([[EMClient sharedClient] isLoggedIn])];
-                    });
+                [[EMClient sharedClient] dataMigrationTo3];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+                    
+                    [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@([[EMClient sharedClient] isLoggedIn])];
                 });
-                
             });
 
         } failure:^(EMError *aError) {
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                [weakself hideHud];
+                [self hideHud];
                 
                 switch (aError.code)
                 {
