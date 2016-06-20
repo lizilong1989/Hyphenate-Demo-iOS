@@ -126,14 +126,13 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
-    /** Parse **/
     NSError *parseError = nil;
-    
     NSData  *jsonData = [NSJSONSerialization dataWithJSONObject:userInfo
-                                                        options:NSJSONWritingPrettyPrinted error:&parseError];
+                                                        options:NSJSONWritingPrettyPrinted
+                                                          error:&parseError];
     NSString *str =  [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"apns.content", @"Apns content")
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"apns.content", @"")
                                                     message:str
                                                    delegate:nil
                                           cancelButtonTitle:NSLocalizedString(@"ok", @"OK")
