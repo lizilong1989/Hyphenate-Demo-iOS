@@ -238,7 +238,7 @@
 "message.video1" = "[video]";
 "message.beginReceiveOffine" = "begin to receive offline messages";
 "message.endReceiveOffine" = "end to receive offline messages";
-"message.toolBar.inputPlaceHolder" = "input a new message";
+"message.toolBar.inputPlaceHolder" = "enter a new message";
 "message.toolBar.record.upCancel" = "slide up to cancel sending";
 "message.toolBar.record.loosenCancel" = "release the fingers, to cancel sending";
 "message.toolBar.record.touch" = "Hold to Record Audio";
