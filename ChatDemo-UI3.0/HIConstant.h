@@ -8,11 +8,10 @@
 
   */
 
-#ifndef ChatDemo_UI2_0_ChatDemoUIDefine_h
-#define ChatDemo_UI2_0_ChatDemoUIDefine_h
+#ifndef HIConstant_h
+#define HIConstant_h
 
-#define IS_IPHONE_5 ( fabs( ( double )[ [ UIScreen mainScreen ] bounds ].size.height - ( double )568 ) < DBL_EPSILON )
-
+#define kNotification_didReceiveRequest @"kNotification_didReceiveRequest"
 #define KNOTIFICATION_LOGINCHANGE @"loginStateChange"
 
 #endif

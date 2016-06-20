@@ -13,11 +13,13 @@
 #import "FriendRequestViewController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate, EMChatManagerDelegate>
-{
-    EMConnectionState _connectionState;
-}
 
 @property (strong, nonatomic) UIWindow *window;
+
+/** Hyphenate **/
+@property (assign, nonatomic) EMConnectionState connectionState;
+
+/** Google Analytics **/
 @property (strong, nonatomic) id<GAITracker> tracker;
 
 @property (strong, nonatomic) MainViewController *mainController;

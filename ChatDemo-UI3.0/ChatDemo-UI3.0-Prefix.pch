@@ -17,7 +17,7 @@
 
     #import <Google/Analytics.h>
 
-    #import "ChatDemoUIDefine.h"
+    #import "HIConstant.h"
     #import "EMAlertView.h"
     #import "TTGlobalUICommon.h"
 
@@ -25,9 +25,6 @@
     #import "EaseUI.h"
 
     #import "UIColor+Hyphenate.h"
-
-
-    #define kNotification_didReceiveRequest @"kNotification_didReceiveRequest"
 
 
 #define DEMO_CALL 1

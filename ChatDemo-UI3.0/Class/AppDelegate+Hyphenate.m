@@ -12,6 +12,8 @@
 
 #import "AppDelegate+Hyphenate.h"
 #import "AppDelegate+HyphenateDebug.h"
+
+/** Parse **/
 #import "AppDelegate+Parse.h"
 
 #import "LoginViewController.h"
@@ -31,14 +33,13 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
                                                  name:KNOTIFICATION_LOGINCHANGE
                                                object:nil];
     
+    // Init Hyhenate SDK
     EMOptions *options = [EMOptions optionsWithAppkey:appkey];
     options.apnsCertName = apnsCertName;
     options.isAutoAcceptGroupInvitation = NO;
-    // options.enableConsoleLog = YES;
-    
     [[EMClient sharedClient] initializeSDKWithOptions:options];
     
-    [self registerRemoteNotification];
+    [self registerNotification];
     
     BOOL isAutoLogin = [EMClient sharedClient].isAutoLogin;
     if (isAutoLogin){
@@ -49,7 +50,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
     }
 }
 
-#pragma mark - App Delegate
+#pragma mark - Remove Notification Delegate
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
@@ -77,15 +78,22 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 - (void)loginStateChange:(NSNotification *)notification
 {
     BOOL loginSuccess = [notification.object boolValue];
+    
     UINavigationController *navigationController = nil;
-    if (loginSuccess) {
+    
+    if (loginSuccess)
+    {
         [[FriendRequestViewController shareController] loadDataSourceFromLocalDB];
+        
         if (self.mainController == nil) {
             self.mainController = [[MainViewController alloc] init];
             navigationController = [[UINavigationController alloc] initWithRootViewController:self.mainController];
-        }else{
+        }
+        else {
             navigationController  = self.mainController.navigationController;
         }
+        
+        /** Parse **/
         [self initParse];
         
         [ChatDemoHelper shareHelper].mainVC = self.mainController;
@@ -94,26 +102,33 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
         [[ChatDemoHelper shareHelper] asyncConversationFromDB];
         [[ChatDemoHelper shareHelper] asyncPushOptions];
     }
-    else{
+    else
+    {
         if (self.mainController) {
             [self.mainController.navigationController popToRootViewControllerAnimated:NO];
         }
+        
         self.mainController = nil;
+        
         [ChatDemoHelper shareHelper].mainVC = nil;
         
         LoginViewController *loginController = [[LoginViewController alloc] init];
         navigationController = [[UINavigationController alloc] initWithRootViewController:loginController];
+        
+        /** Parse **/
         [self clearParse];
     }
     
     self.window.rootViewController = navigationController;
 }
 
-#pragma mark - EMPushManagerDelegateDevice
+#pragma mark - Push Notification Delegate
 
--(void)didReceiveRemoteNotification:(NSDictionary *)userInfo
+- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
+    /** Parse **/
     NSError *parseError = nil;
+    
     NSData  *jsonData = [NSJSONSerialization dataWithJSONObject:userInfo
                                                         options:NSJSONWritingPrettyPrinted error:&parseError];
     NSString *str =  [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
@@ -127,14 +142,12 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
     
 }
 
-#pragma mark - Push Notification
-
-- (void)registerRemoteNotification
+- (void)registerNotification
 {
     UIApplication *application = [UIApplication sharedApplication];
     application.applicationIconBadgeNumber = 0;
     
-    // iOS 8+
+    // iOS 8+ - Configuring the User Notification Settings
     if([application respondsToSelector:@selector(registerUserNotificationSettings:)])
     {
         UIUserNotificationType notificationTypes = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert;
@@ -143,6 +156,8 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
     }
     
 #if !TARGET_IPHONE_SIMULATOR
+    
+    // iOS 8+ - Registration process with Apple Push Notification service
     if ([application respondsToSelector:@selector(registerForRemoteNotifications)]) {
         [application registerForRemoteNotifications];
     }

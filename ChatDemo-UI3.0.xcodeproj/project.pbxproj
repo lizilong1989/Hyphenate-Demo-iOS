@@ -228,7 +228,7 @@
 		90911122192EEBB8008A48AA /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		9091112D192EEC0F008A48AA /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		9091112E192EEC0F008A48AA /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
-		90911133192EEC59008A48AA /* ChatDemoUIDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatDemoUIDefine.h; sourceTree = "<group>"; };
+		90911133192EEC59008A48AA /* HIConstant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HIConstant.h; sourceTree = "<group>"; };
 		90911134192EEC91008A48AA /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		90911135192EEC91008A48AA /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		90911142192EEE6E008A48AA /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
@@ -589,7 +589,7 @@
 				90911033192EEA70008A48AA /* main.m */,
 				D24A4A9B1BCE4B830007BB00 /* ChatDemo-UI3.0-Info.plist */,
 				D24A4A9C1BCE4B830007BB00 /* ChatDemo-UI3.0-Prefix.pch */,
-				90911133192EEC59008A48AA /* ChatDemoUIDefine.h */,
+				90911133192EEC59008A48AA /* HIConstant.h */,
 				3C3D2D1E1A6E5A760099EF88 /* Localizable.strings */,
 			);
 			name = "Supporting Files";

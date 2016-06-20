@@ -11,14 +11,20 @@
  */
 
 #import "AppDelegate.h"
-#import <Fabric/Fabric.h>
-#import <Crashlytics/Crashlytics.h>
 
 #import "MainViewController.h"
 #import "LoginViewController.h"
 
+/** Hyphenate **/
 #import "AppDelegate+Hyphenate.h"
+
+/** Parse **/
 #import "AppDelegate+Parse.h"
+
+/** Fabric **/
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+
 
 /** Hyphenate configuration constants **/
 static NSString *const kHyphenateAppKey = @"hyphenatedemo#hyphenatedemo2";
@@ -31,8 +37,10 @@ static NSString *const kTrackingPreferenceKey = @"allowTracking";
 static BOOL const kGaDryRun = NO;
 static int const kGaDispatchPeriod = 30;
 
+
 @interface AppDelegate ()
 
+/** Google Analytics **/
 - (void)initializeGoogleAnalytics;
 
 @end
@@ -42,8 +50,6 @@ static int const kGaDispatchPeriod = 30;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    _connectionState = EMConnectionConnected;
-    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
@@ -53,7 +59,11 @@ static int const kGaDispatchPeriod = 30;
     [[UINavigationBar appearance] setTitleTextAttributes:
      [NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor], NSForegroundColorAttributeName, [UIFont fontWithName:@"HelveticaNeue" size:21.0], NSFontAttributeName, nil]];
     
+    /** Parse **/
     [self parseApplication:application didFinishLaunchingWithOptions:launchOptions];
+    
+    /** Hyphenate **/
+    self.connectionState = EMConnectionConnected;
     
     // APNs Push Service
     NSString *apnsCertName = nil;
@@ -63,20 +73,19 @@ static int const kGaDispatchPeriod = 30;
     apnsCertName = kHyphenatePushServiceProduction;
 #endif
     
-    // Hyphenate init
     [self hyphenateApplication:application
  didFinishLaunchingWithOptions:launchOptions
                         appkey:kHyphenateAppKey
                   apnsCertName:apnsCertName
                    otherConfig:@{kSDKConfigEnableConsoleLogger:[NSNumber numberWithBool:YES]}];
-    
-    // Google Analytics
+
+    /** Google Analytics **/
 //    [self initializeGoogleAnalytics];
 
-    // Fabric
+    /** Fabric **/
     [[Fabric sharedSDK] setDebug:YES];
     [Fabric with:@[[Crashlytics class]]];
-    
+
     return YES;
 }
 
