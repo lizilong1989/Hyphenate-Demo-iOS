@@ -90,7 +90,7 @@
 //register
 "register.ongoing" = "Registering...";
 "register.fail" = "Registration failed";
-"register.success" = "Register successfully";
+"register.success" = "Registered successfully";
 "register.repeat" = "You registered user already exists!";
 "register.confirmPassword" = "The two input password does not match, please input again";
 

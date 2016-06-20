@@ -67,27 +67,27 @@
             
             [[EMClient sharedClient] asyncRegisterWithUsername:self.usernameTextField.text password:self.passwordTextField.text success:^{
                 
-                if (self.usernameTextField.text.length > 0) {
+                // Update APNs display name
+                [[EMClient sharedClient] asyncSetApnsNickname:self.usernameTextField.text success:^{
                     
-                    [[EMClient sharedClient] asyncSetApnsNickname:self.usernameTextField.text success:^{
-                        
-                    } failure:^(EMError *aError) {
-                        TTAlertNoTitle(aError.errorDescription);
-                    }];
-                }
+                } failure:^(EMError *aError) {
+                    TTAlertNoTitle(aError.errorDescription);
+                }];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     
                     [self hideHud];
                     
-                    [self showHudInView:self.view hint:NSLocalizedString(@"register.success", @"Is to register...")];
+                    [self showHudInView:self.view hint:NSLocalizedString(@"register.success", @"")];
                     
                     double delayInSeconds = 2.0;
                     
                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
                     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                        
                         [self hideHud];
-                        //code to be executed on the main queue after delay
+
+                        // Log in user
                         [self loginWithUsername:self.usernameTextField.text password:self.passwordTextField.text];
                     });
                 });
@@ -141,13 +141,10 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 [self hideHud];
-                
-                [[EMClient sharedClient].options setIsAutoLogin:YES];
-                
+                                
+                // Update to latest Hyphenate SDK
                 [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-                
                 [[EMClient sharedClient] dataMigrationTo3];
-                
                 [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@([[EMClient sharedClient] isLoggedIn])];
