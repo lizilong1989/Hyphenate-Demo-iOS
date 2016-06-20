@@ -51,60 +51,51 @@
     [[GAI sharedInstance].defaultTracker send:[[GAIDictionaryBuilder createScreenView] build]];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 
 #pragma mark - Actions
 
 // Register an IM account
 - (IBAction)doRegister:(id)sender
 {
-    if (![self isEmpty]) {
+    if (![self isInputsEmpty]) {
         
         [self.view endEditing:YES];
         
-        if ([self.usernameTextField.text isChinese]) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"login.nameNotSupportZh", @"")
-                                                            message:nil
-                                                           delegate:nil
-                                                  cancelButtonTitle:NSLocalizedString(@"ok", @"OK")
-                                                  otherButtonTitles:nil];
-            
-            [alert show];
-            
-            return;
-        }
-        
         [self showHudInView:self.view hint:NSLocalizedString(@"register.ongoing", @"Is to register...")];
         
-        __weak typeof(self) weakself = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-           
-            [[EMClient sharedClient] asyncRegisterWithUsername:weakself.usernameTextField.text password:weakself.passwordTextField.text success:^{
+            
+            [[EMClient sharedClient] asyncRegisterWithUsername:self.usernameTextField.text password:self.passwordTextField.text success:^{
+                
+                if (self.usernameTextField.text.length > 0) {
+                    
+                    [[EMClient sharedClient] asyncSetApnsNickname:self.usernameTextField.text success:^{
+                        
+                    } failure:^(EMError *aError) {
+                        TTAlertNoTitle(aError.errorDescription);
+                    }];
+                }
+                
                 dispatch_async(dispatch_get_main_queue(), ^{
                     
-                    [weakself hideHud];
+                    [self hideHud];
                     
-                    [weakself showHudInView:weakself.view hint:NSLocalizedString(@"register.success", @"Is to register...")];
+                    [self showHudInView:self.view hint:NSLocalizedString(@"register.success", @"Is to register...")];
                     
                     double delayInSeconds = 2.0;
                     
                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
                     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                        [weakself hideHud];
+                        [self hideHud];
                         //code to be executed on the main queue after delay
-                        [weakself loginWithUsername:weakself.usernameTextField.text password:weakself.passwordTextField.text];
+                        [self loginWithUsername:self.usernameTextField.text password:self.passwordTextField.text];
                     });
                 });
                 
             } failure:^(EMError *aError) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     
-                    [weakself hideHud];
+                    [self hideHud];
                     
                     switch (aError.code) {
                         case EMErrorServerNotReachable:
@@ -129,6 +120,16 @@
     }
 }
 
+- (IBAction)doLogin:(id)sender
+{
+    if (![self isInputsEmpty]) {
+        
+        [self.view endEditing:YES];
+        
+        [self loginWithUsername:self.usernameTextField.text password:self.passwordTextField.text];
+    }
+}
+
 - (void)loginWithUsername:(NSString *)username password:(NSString *)password
 {
     [self showHudInView:self.view hint:NSLocalizedString(@"login.inProgress", @"")];
@@ -147,12 +148,9 @@
                 
                 [[EMClient sharedClient] dataMigrationTo3];
                 
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-                    
-                    [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@([[EMClient sharedClient] isLoggedIn])];
-                });
+                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@([[EMClient sharedClient] isLoggedIn])];
             });
 
         } failure:^(EMError *aError) {
@@ -161,6 +159,8 @@
                 
                 [self hideHud];
                 
+                TTAlertNoTitle(aError.errorDescription);
+
                 switch (aError.code)
                 {
                     case EMErrorNetworkUnavailable:
@@ -175,6 +175,9 @@
                     case EMErrorServerTimeout:
                         TTAlertNoTitle(NSLocalizedString(@"error.connectServerTimeout", @"Connect to the server timed out!"));
                         break;
+                    case EMErrorUserNotFound:
+                        TTAlertNoTitle(NSLocalizedString(@"error.login.userNotFound", @""));
+                        break;
                     default:
                         TTAlertNoTitle(NSLocalizedString(@"login.fail", @"Login failure"));
                         break;
@@ -184,57 +187,16 @@
     });
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+- (BOOL)isInputsEmpty
 {
-    if ([alertView cancelButtonIndex] != buttonIndex) {
-        
-        UITextField *nameTextField = [alertView textFieldAtIndex:0];
-        
-        if(nameTextField.text.length > 0) {
-            [[EMClient sharedClient] asyncSetApnsNickname:nameTextField.text success:^{
-                
-            } failure:^(EMError *aError) {
-                
-            }];
-        }
-    }
-    
-    [self loginWithUsername:self.usernameTextField.text password:self.passwordTextField.text];
-}
-
-- (IBAction)doLogin:(id)sender
-{
-    if (![self isEmpty]) {
-        
-        [self.view endEditing:YES];
-        
-        if ([self.usernameTextField.text isChinese]) {
-            UIAlertView *alert = [[UIAlertView alloc]
-                                  initWithTitle:NSLocalizedString(@"login.nameNotSupportZh", @"Name does not support Chinese")
-                                  message:nil
-                                  delegate:nil
-                                  cancelButtonTitle:NSLocalizedString(@"ok", @"OK")
-                                  otherButtonTitles:nil];
-            
-            [alert show];
-            
-            return;
-        }
-        
-        [self loginWithUsername:self.usernameTextField.text password:self.passwordTextField.text];
-    }
-}
-
-- (BOOL)isEmpty
-{
-    BOOL ret = NO;
+    BOOL isEmptyField = NO;
     
     NSString *username = self.usernameTextField.text;
     NSString *password = self.passwordTextField.text;
     
     if (username.length == 0 || password.length == 0) {
         
-        ret = YES;
+        isEmptyField = YES;
         
         [EMAlertView showAlertWithTitle:NSLocalizedString(@"prompt", @"Prompt")
                                 message:NSLocalizedString(@"login.inputNameAndPswd", @"Please enter username and password")
@@ -243,7 +205,7 @@
                       otherButtonTitles:nil];
     }
     
-    return ret;
+    return isEmptyField;
 }
 
 

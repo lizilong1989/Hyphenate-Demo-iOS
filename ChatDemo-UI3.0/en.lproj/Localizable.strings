@@ -80,6 +80,7 @@
 
 //login
 "login.errorAutoLogin" = "Auto-login failed, please try to login again";
+"error.login.userNotFound" = "User not found";
 "login.nameNotSupportZh" = "Does not support Chinese characters";
 "login.inProgress" = "Login...";
 "login.fail" = "Logon failure";
