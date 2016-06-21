@@ -28,77 +28,84 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
                 apnsCertName:(NSString *)apnsCertName
                  otherConfig:(NSDictionary *)otherConfig
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(loginStateChange:)
-                                                 name:KNOTIFICATION_LOGINCHANGE
-                                               object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(proceedLogin) name:KNotification_login object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(proceedLogout) name:KNotification_logout object:nil];
+
     // Init Hyhenate SDK
     EMOptions *options = [EMOptions optionsWithAppkey:appkey];
     options.apnsCertName = apnsCertName;
-    options.isAutoAcceptGroupInvitation = NO;
     [[EMClient sharedClient] initializeSDKWithOptions:options];
     
     [self registerNotification];
     
     BOOL isAutoLogin = [EMClient sharedClient].isAutoLogin;
-    if (isAutoLogin){
-        [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@YES];
+    if (isAutoLogin) {
+        [self proceedLogin];
     }
     else {
-        [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@NO];
+        [self proceedLogout];
+        [[EMClient sharedClient].options setIsAutoLogin:YES];
     }
 }
 
 
-#pragma mark - login changed
+#pragma mark - login/logout
 
-- (void)loginStateChange:(NSNotification *)notification
+- (void)proceedLogin
 {
-    BOOL loginSuccess = [notification.object boolValue];
+    [[FriendRequestViewController shareController] loadDataSourceFromLocalDB];
     
-    UINavigationController *navigationController = nil;
+    UINavigationController *navigationController;
+
+    if (self.mainViewController == nil) {
+        self.mainViewController = [[MainViewController alloc] init];
+        navigationController = [[UINavigationController alloc] initWithRootViewController:self.mainViewController];
+    }
+    else {
+        navigationController  = self.mainViewController.navigationController;
+    }
     
-    if (loginSuccess)
-    {
-        [[FriendRequestViewController shareController] loadDataSourceFromLocalDB];
-        
-        if (self.mainController == nil) {
-            self.mainController = [[MainViewController alloc] init];
-            navigationController = [[UINavigationController alloc] initWithRootViewController:self.mainController];
-        }
-        else {
-            navigationController  = self.mainController.navigationController;
-        }
-        
-        /** Parse **/
-        [self initParse];
-        
-        [ChatDemoHelper shareHelper].mainVC = self.mainController;
-        
-        [[ChatDemoHelper shareHelper] asyncGroupFromServer];
-        [[ChatDemoHelper shareHelper] asyncConversationFromDB];
-        [[ChatDemoHelper shareHelper] asyncPushOptions];
-    }
-    else
-    {
-        if (self.mainController) {
-            [self.mainController.navigationController popToRootViewControllerAnimated:NO];
-        }
-        
-        self.mainController = nil;
-        
-        [ChatDemoHelper shareHelper].mainVC = nil;
-        
-        LoginViewController *loginController = [[LoginViewController alloc] init];
-        navigationController = [[UINavigationController alloc] initWithRootViewController:loginController];
-        
-        /** Parse **/
-        [self clearParse];
-    }
+    /** Parse **/
+    [self initParse];
+    
+    [ChatDemoHelper shareHelper].mainVC = self.mainViewController;
+    
+    [[ChatDemoHelper shareHelper] asyncGroupFromServer];
+    [[ChatDemoHelper shareHelper] asyncConversationFromDB];
+    [[ChatDemoHelper shareHelper] asyncPushOptions];
     
     self.window.rootViewController = navigationController;
 }
+
+- (void)proceedLogout
+{
+    if ([[EMClient sharedClient] isLoggedIn]) {
+        [[ChatDemoHelper shareHelper] logout];
+    }
+    else {
+        [self proceedLoginViewController];
+    }
+}
+
+- (void)proceedLoginViewController
+{
+    if (self.mainViewController) {
+        [self.mainViewController.navigationController popToRootViewControllerAnimated:NO];
+    }
+    
+    self.mainViewController = nil;
+    
+    [ChatDemoHelper shareHelper].mainVC = nil;
+    
+    LoginViewController *loginController = [[LoginViewController alloc] init];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginController];
+    
+    self.window.rootViewController = navigationController;
+
+    /** Parse **/
+    [self clearParse];
+}
+
 
 #pragma mark - Notification Delegate
 

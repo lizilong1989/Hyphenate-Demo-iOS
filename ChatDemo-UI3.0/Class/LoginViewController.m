@@ -143,15 +143,16 @@
                 
                 [self hideHud];
                                 
-                // Update to latest Hyphenate SDK
                 [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-                [[EMClient sharedClient] dataMigrationTo3];
-                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
                 
-                [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@([[EMClient sharedClient] isLoggedIn])];
+                [[ChatDemoHelper shareHelper] login];
+                
+                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
             });
 
         } failure:^(EMError *aError) {
+            
+            [[ChatDemoHelper shareHelper] logout];
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 

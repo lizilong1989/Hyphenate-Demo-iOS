@@ -94,15 +94,15 @@ static int const kGaDispatchPeriod = 30;
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
-    if (self.mainController) {
-        [self.mainController jumpToChatList];
+    if (self.mainViewController) {
+        [self.mainViewController jumpToChatList];
     }
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
-    if (self.mainController) {
-        [self.mainController didReceiveLocalNotification:notification];
+    if (self.mainViewController) {
+        [self.mainViewController didReceiveLocalNotification:notification];
     }
 }
 

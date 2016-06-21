@@ -166,24 +166,20 @@ static ChatDemoHelper *helper = nil;
 
 - (void)didLoginFromOtherDevice
 {
-    [self _clearHelper];
+    [self logout];
     
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"prompt", @"Prompt") message:NSLocalizedString(@"loggedIntoAnotherDevice", @"your login account has been in other places") delegate:self cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil, nil];
     
     [alertView show];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@NO];
 }
 
 - (void)didRemovedFromServer
 {
-    [self _clearHelper];
+    [self logout];
     
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"prompt", @"Prompt") message:NSLocalizedString(@"loginUserRemoveFromServer", @"your account has been removed from the server side") delegate:self cancelButtonTitle:NSLocalizedString(@"ok", @"OK") otherButtonTitles:nil, nil];
     
     [alertView show];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@NO];
 }
 
 
@@ -703,7 +699,15 @@ static ChatDemoHelper *helper = nil;
     return chatViewContrller;
 }
 
-- (void)_clearHelper
+- (void)login
+{
+    // Update to latest Hyphenate SDK
+    [[EMClient sharedClient] dataMigrationTo3];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:KNotification_login object:nil];
+}
+
+- (void)logout
 {
     self.mainVC = nil;
     self.conversationListVC = nil;
@@ -711,9 +715,14 @@ static ChatDemoHelper *helper = nil;
     self.contactViewVC = nil;
     
     [[EMClient sharedClient] asyncLogout:NO success:^{
-        //logout succeed
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:KNotification_logout object:nil];
+        });
     } failure:^(EMError *aError) {
-        //logout failed
+        NSLog(@"Error!!! Failed to logout properly");
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:KNotification_logout object:nil];
+        });
     }];
     
 #if DEMO_CALL == 1

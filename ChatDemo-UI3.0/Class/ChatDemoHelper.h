@@ -51,6 +51,10 @@
 - (void)asyncGroupFromServer;
 - (void)asyncConversationFromDB;
 
+// Login/logout operation
+- (void)login;
+- (void)logout;
+
 #if DEMO_CALL == 1
 
 - (void)makeCallWithUsername:(NSString *)aUsername

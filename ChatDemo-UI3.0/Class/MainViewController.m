@@ -53,7 +53,7 @@ static NSString *kGroupName = @"GroupName";
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
 //    self.title = NSLocalizedString(@"title.conversation", @"Chats");
-    self.title = @"Secret Lovers";
+    self.title = @"Kindling";
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestCount) name:kNotification_didReceiveRequest object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequestCount) name:@"updateRequestCount" object:nil];
@@ -114,7 +114,7 @@ static NSString *kGroupName = @"GroupName";
 //    }
     
     if (item.tag == 1) {
-        self.title = @"Secret Lovers";
+        self.title = @"Kindling";
         self.navigationItem.rightBarButtonItem = self.addFriendItem;
     }
     else if (item.tag == 2) {

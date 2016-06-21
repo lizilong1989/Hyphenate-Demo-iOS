@@ -280,7 +280,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf hideHud];
             [[FriendRequestViewController shareController] clear];
-            [[NSNotificationCenter defaultCenter] postNotificationName:KNOTIFICATION_LOGINCHANGE object:@NO];
+            [[NSNotificationCenter defaultCenter] postNotificationName:KNotification_logout object:nil];
         });
     } failure:^(EMError *aError) {
         dispatch_async(dispatch_get_main_queue(), ^{

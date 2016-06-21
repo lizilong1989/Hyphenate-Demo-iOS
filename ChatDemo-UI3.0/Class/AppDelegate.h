@@ -16,7 +16,7 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
-@property (strong, nonatomic) MainViewController *mainController;
+@property (strong, nonatomic) MainViewController *mainViewController;
 
 /** Google Analytics **/
 @property (strong, nonatomic) id<GAITracker> tracker;

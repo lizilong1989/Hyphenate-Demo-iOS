@@ -12,6 +12,7 @@
 #define HIConstant_h
 
 #define kNotification_didReceiveRequest @"kNotification_didReceiveRequest"
-#define KNOTIFICATION_LOGINCHANGE @"loginStateChange"
+#define KNotification_login @"KNotification_login"
+#define KNotification_logout @"KNotification_logout"
 
 #endif
