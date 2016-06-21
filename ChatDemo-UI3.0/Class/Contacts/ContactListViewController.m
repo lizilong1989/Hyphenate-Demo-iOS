@@ -682,14 +682,14 @@
             
         } failure:^(EMError *aError) {
             
-            [self showHint:[NSString stringWithFormat:@"Failed to get blacklist from server - %u", aError.code]];
+            [self showHint:[NSString stringWithFormat:@"Failed to get blacklist from server - %@", aError.errorDescription]];
             [self reloadDataSource];
             [self tableViewDidFinishTriggerHeader:YES reload:NO];
         }];
         
     } failure:^(EMError *aError) {
         
-        [self showHint:[NSString stringWithFormat:@"Failed to get contacts from server - %u", aError.code]];
+        [self showHint:aError.errorDescription];
         [self reloadDataSource];
         [self tableViewDidFinishTriggerHeader:YES reload:NO];
     }];

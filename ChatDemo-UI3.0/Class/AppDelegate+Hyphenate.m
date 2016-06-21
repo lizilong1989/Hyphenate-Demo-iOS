@@ -113,9 +113,9 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[EMClient sharedClient] asyncBindDeviceToken:deviceToken success:^{
-            NSLog(@"bind device token for remote notification succeed");
+            NSLog(@"bind device token for remote notification succeeded");
         } failure:^(EMError *aError) {
-            NSLog(@"Error!!! Failed to bindDeviceToken - %u", aError.code);
+            NSLog(@"Error!!! Failed to bindDeviceToken - %@", aError.errorDescription);
         }];
     });
 }
