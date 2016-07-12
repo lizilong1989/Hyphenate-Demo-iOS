@@ -6,6 +6,7 @@
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
     "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++93DFFDC" : 0,
     "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++D47FED9" : 0,
+    "92334988EDD5CB8BE7DDA5DFC6599FAE8259256F+++1CA89BC" : 0,
     "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++96F23FF" : 0,
     "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++D033EB5" : 0,
     "92334988EDD5CB8BE7DDA5DFC6599FAE8259256F+++F1208F6" : 0
@@ -14,6 +15,7 @@
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
     "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++93DFFDC" : "Hyphenate-Demo-iOS\/",
     "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++D47FED9" : "sdkdemoapp3.0_ios\/",
+    "92334988EDD5CB8BE7DDA5DFC6599FAE8259256F+++1CA89BC" : "Hyphenate-EaseUI-iOS\/",
     "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++96F23FF" : "Hyphenate-Demo-IM\/",
     "CA59206E14808EF3FA88B049798D0EE8747F2ADE+++D033EB5" : "sdkdemoapp3.0_ios\/",
     "92334988EDD5CB8BE7DDA5DFC6599FAE8259256F+++F1208F6" : "easeui_ios\/"
@@ -22,6 +24,11 @@
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
   "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "ChatDemo-UI3.0.xcworkspace",
   "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/HyphenateInc\/Hyphenate-EaseUI-iOS",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "92334988EDD5CB8BE7DDA5DFC6599FAE8259256F+++1CA89BC"
+    },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/HyphenateInc\/easeui_ios.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
